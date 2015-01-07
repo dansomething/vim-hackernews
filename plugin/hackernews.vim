@@ -3,8 +3,12 @@ if !has('python')
     finish
 endif
 
+
 " Import Python code
 let s:path = expand("<sfile>:p:h")
 execute "pyfile " . s:path . "/hackernews.py"
 
+
 command! HackerNews python hacker_news()
+
+map <return> :python hacker_news_item()<cr>
