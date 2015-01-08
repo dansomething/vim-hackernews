@@ -1,3 +1,4 @@
+import HTMLParser
 import json
 import re
 import textwrap
@@ -48,11 +49,13 @@ def hacker_news_item():
     print_comments(item['comments'], b)
 
 
+html = HTMLParser.HTMLParser()
+
 def print_comments(comments, b):
     for comment in comments:
         level = comment['level']
         b.append("%sComment by %s %s:" % ("\t"*level, comment['user'], comment['time_ago']))
-        contents = textwrap.wrap(re.sub('<[^<]+?>', '', comment['content']),
+        contents = textwrap.wrap(html.unescape(re.sub('<[^<]+?>', '', comment['content'])),
                                  width=80,
                                  initial_indent=" "*4*level,
                                  subsequent_indent=" "*4*level)
