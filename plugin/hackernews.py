@@ -54,7 +54,7 @@ html = HTMLParser.HTMLParser()
 def print_comments(comments, b):
     for comment in comments:
         level = comment['level']
-        b.append("%sComment by %s %s:" % ("\t"*level, comment['user'], comment['time_ago']))
+        b.append("%sComment by %s %s:" % ("\t"*level, comment.get('user','???'), comment['time_ago']))
         contents = textwrap.wrap(html.unescape(re.sub('<[^<]+?>', '', comment['content'])),
                                  width=80,
                                  initial_indent=" "*4*level,
