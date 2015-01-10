@@ -55,11 +55,12 @@ def print_comments(comments, b):
     for comment in comments:
         level = comment['level']
         b.append("%sComment by %s %s:" % ("\t"*level, comment.get('user','???'), comment['time_ago']))
-        contents = textwrap.wrap(html.unescape(re.sub('<[^<]+?>', '', comment['content'])),
-                                 width=80,
-                                 initial_indent=" "*4*level,
-                                 subsequent_indent=" "*4*level)
-        for line in contents:
-            b.append(line)
+        for p in comment['content'].split("<p>"):
+            contents = textwrap.wrap(html.unescape(re.sub('<[^<]+?>', '', p)),
+                                     width=80,
+                                     initial_indent=" "*4*level,
+                                     subsequent_indent=" "*4*level)
+            for line in contents:
+                b.append(line)
         b.append("")
         print_comments(comment['comments'], b)
