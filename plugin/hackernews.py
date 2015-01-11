@@ -10,7 +10,7 @@ API_URL = "http://node-hnapi.herokuapp.com"
 
 
 def hacker_news():
-    vim.command("edit -HackerNews-")
+    vim.command("edit .hackernews")
     vim.command("setlocal noswapfile")
     vim.command("setlocal buftype=nofile")
 
@@ -38,7 +38,7 @@ def hacker_news_item():
 
     item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
 
-    vim.command("edit -HackerNews-")
+    vim.command("edit .hackernews")
     b = vim.current.buffer
     b[0] = item['title']
     b.append("Posted %s by %s" % (item['time_ago'], item['user']))

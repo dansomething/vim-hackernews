@@ -12,3 +12,6 @@ execute "pyfile " . s:path . "/hackernews.py"
 command! HackerNews python hacker_news()
 
 map <return> :python hacker_news_item()<cr>
+
+
+au! BufRead,BufNewFile *.hackernews set filetype=hackernews
