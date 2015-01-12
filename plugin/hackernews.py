@@ -43,7 +43,7 @@ def hacker_news_item():
     b[0] = item['title']
     b.append("Posted %s by %s" % (item['time_ago'], item['user']))
     b.append("%d Points / %d Comments" % (item['points'], item['comments_count']))
-    b.append(item['url'])
+    b.append("[%s]" % item['url'])
     b.append("")
     b.append("")
     print_comments(item['comments'], b)
@@ -56,7 +56,22 @@ def print_comments(comments, b):
         level = comment['level']
         b.append("%sComment by %s %s:" % ("\t"*level, comment.get('user','???'), comment['time_ago']))
         for p in comment['content'].split("<p>"):
-            contents = textwrap.wrap(html.unescape(re.sub('<[^<]+?>', '', p)),
+            p = html.unescape(p)
+            # Convert <a href="http://url/">Text</a> tags
+            # to markdown equivalent: (Text)[http://url/]
+            s = p.find("a>")
+            while s > 0:
+                s += 2
+                section = p[:s]
+                m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>", section)
+                # Do not bother with anchor text if it is same as href url
+                if m.group(1)[:20] == m.group(2)[:20]:
+                    p = p.replace(m.group(0), "[%s]" % m.group(2))
+                else:
+                    p = p.replace(m.group(0), "(%s)[%s]" % (m.group(2), m.group(1)))
+                s = p.find("a>")
+
+            contents = textwrap.wrap(re.sub('<[^<]+?>', '', p),
                                      width=80,
                                      initial_indent=" "*4*level,
                                      subsequent_indent=" "*4*level)
