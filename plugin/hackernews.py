@@ -5,6 +5,8 @@ import textwrap
 import urllib2
 import vim
 
+from readability.readability import Document
+
 
 API_URL = "http://node-hnapi.herokuapp.com"
 
@@ -28,8 +30,28 @@ def hacker_news():
         b.append("")
 
 
-def hacker_news_item():
+def hacker_news_link():
     line = vim.current.line
+    m = re.search(r"\[(http.*)\]", line)
+    if m:
+        vim.command("edit .hackernews")
+        b = vim.current.buffer
+        content = urllib2.urlopen(m.group(1)).read()
+        doc = Document(content)
+        b[0] = doc.title()
+        b.append("[%s]" % m.group(1))
+        b.append("")
+        b.append("")
+        for p in doc.summary().split("<p>"):
+            p = html.unescape(p)
+            contents = textwrap.wrap(re.sub('<[^<]+?>', '', p),
+                                     width=80)
+            for line in contents:
+                b.append(line)
+            if contents:
+                b.append("")
+        return
+
     start, end = line.rfind('['), line.rfind(']')
     if start < 0 or end < 0:
         print "HackerNews.vim Error: Could not parse [item id]"
@@ -66,7 +88,7 @@ def print_comments(comments, b):
                 m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>", section)
                 # Do not bother with anchor text if it is same as href url
                 if m.group(1)[:20] == m.group(2)[:20]:
-                    p = p.replace(m.group(0), "[%s]" % m.group(2))
+                    p = p.replace(m.group(0), "[%s]" % m.group(1))
                 else:
                     p = p.replace(m.group(0), "(%s)[%s]" % (m.group(2), m.group(1)))
                 s = p.find("a>")
