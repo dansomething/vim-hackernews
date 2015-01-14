@@ -5,8 +5,6 @@ import textwrap
 import urllib2
 import vim
 
-from readability.readability import Document
-
 
 API_URL = "http://node-hnapi.herokuapp.com"
 
@@ -36,20 +34,18 @@ def hacker_news_link():
     if m:
         vim.command("edit .hackernews")
         b = vim.current.buffer
-        content = urllib2.urlopen(m.group(1)).read()
-        doc = Document(content)
-        b[0] = doc.title()
-        b.append("[%s]" % m.group(1))
-        b.append("")
-        b.append("")
-        for p in doc.summary().split("<p>"):
-            p = html.unescape(p)
-            contents = textwrap.wrap(re.sub('<[^<]+?>', '', p),
-                                     width=80)
-            for line in contents:
-                b.append(line)
-            if contents:
+        content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+m.group(1)).read()
+        #content = html.unescape(html)
+        for i, line in enumerate(content.split('\n')):
+            if not line:
                 b.append("")
+                continue
+            line = textwrap.wrap(line, width=80)
+            for j, wrap in enumerate(line):
+                if i == 0 and j == 0:
+                    b[0] = wrap
+                else:
+                    b.append(wrap)
         return
 
     start, end = line.rfind('['), line.rfind(']')
