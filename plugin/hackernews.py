@@ -35,7 +35,6 @@ def hacker_news_link():
         vim.command("edit .hackernews")
         b = vim.current.buffer
         content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+m.group(1)).read()
-        #content = html.unescape(html)
         for i, line in enumerate(content.split('\n')):
             if not line:
                 b.append("")
@@ -95,5 +94,7 @@ def print_comments(comments, b):
                                      subsequent_indent=" "*4*level)
             for line in contents:
                 b.append(line)
+            if contents:
+                b.append("")
         b.append("")
         print_comments(comment['comments'], b)
