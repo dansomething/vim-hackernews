@@ -7,7 +7,7 @@ endif
 
 
 syn match Comment /^\s*Comment.*$/
-syn match Constant /\[http.*\]/
+syn region Constant start="\[http" end="\]"
 
 
 let b:current_syntax = "hackernews"

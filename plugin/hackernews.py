@@ -30,11 +30,47 @@ def hacker_news():
 
 def hacker_news_link():
     line = vim.current.line
-    m = re.search(r"\[(http.*)\]", line)
+
+    # Search for Hacker News [item id]
+    m = re.search(r"^[0-9]{1,2}.*\[([0-9]+)\]", line)
     if m:
+        id = m.group(1)
+        item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
         vim.command("edit .hackernews")
         b = vim.current.buffer
-        content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+m.group(1)).read()
+        b[0] = item['title']
+        b.append("Posted %s by %s" % (item['time_ago'], item['user']))
+        b.append("%d Points / %d Comments" % (item['points'], item['comments_count']))
+        b.append("[%s]" % item['url'])
+        b.append("")
+        b.append("")
+        print_comments(item['comments'], b)
+        return
+
+    # Search for [http] link
+    b = vim.current.buffer
+    i = vim.current.range.start
+    while b[i].find("[http") < 0 and i >= 0:
+        # The line we were on had no part of a link in it
+        if b[i-1].find("]") > 0 and b[i-1].find("]") > b[i-1].find("[http"):
+            return
+        i -= 1
+    start = i
+    if b[i].find("[http") >= 0:
+        if b[i].find("]") >= 0:
+            url = b[i][b[i].find("[http")+1:b[i].find("]")]
+        else:
+            url = b[i][b[i].find("[http")+1:]
+            while b[i].find("]") < 0:
+                if i != start:
+                    url += b[i]
+                i += 1
+            if i != start:
+                url += b[i][:b[i].find("]")]
+            url = url.replace(" ", "").replace("\n", "")
+        vim.command("edit .hackernews")
+        b = vim.current.buffer
+        content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+url).read()
         for i, line in enumerate(content.split('\n')):
             if not line:
                 b.append("")
@@ -47,23 +83,7 @@ def hacker_news_link():
                     b.append(wrap)
         return
 
-    start, end = line.rfind('['), line.rfind(']')
-    if start < 0 or end < 0:
-        print "HackerNews.vim Error: Could not parse [item id]"
-        return
-    id = line[start+1:end]
-
-    item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
-
-    vim.command("edit .hackernews")
-    b = vim.current.buffer
-    b[0] = item['title']
-    b.append("Posted %s by %s" % (item['time_ago'], item['user']))
-    b.append("%d Points / %d Comments" % (item['points'], item['comments_count']))
-    b.append("[%s]" % item['url'])
-    b.append("")
-    b.append("")
-    print_comments(item['comments'], b)
+    print "HackerNews.vim Error: Could not parse [item id]"
 
 
 html = HTMLParser.HTMLParser()
