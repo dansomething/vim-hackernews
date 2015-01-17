@@ -41,7 +41,8 @@ def hacker_news_link():
         b[0] = item['title']
         b.append("Posted %s by %s" % (item['time_ago'], item['user']))
         b.append("%d Points / %d Comments" % (item['points'], item['comments_count']))
-        b.append("[%s]" % item['url'])
+        for i, wrap in enumerate(textwrap.wrap("[%s]" % item['url'], width=80)):
+            b.append(wrap)
         b.append("")
         b.append("")
         print_comments(item['comments'], b)
