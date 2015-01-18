@@ -9,23 +9,33 @@ import vim
 API_URL = "http://node-hnapi.herokuapp.com"
 
 
+def bwrite(s):
+    s = s.encode('utf-8')
+    b = vim.current.buffer
+    if not b[0]:
+        b[0] = s
+    else:
+        b.append(s)
+
+
 def hacker_news():
     vim.command("edit .hackernews")
     vim.command("setlocal noswapfile")
     vim.command("setlocal buftype=nofile")
 
-    b = vim.current.buffer
-    b[0] = "Hacker News"
-    b.append("===========")
-    b.append("")
+    bwrite("Hacker News")
+    bwrite("===========")
+    bwrite("")
 
     news1 = json.loads(urllib2.urlopen(API_URL+"/news").read())
     news2 = json.loads(urllib2.urlopen(API_URL+"/news2").read())
     for i, item in enumerate(news1+news2):
+        if 'title' not in item:
+            continue
         line = "%d. %s (%d comments) [%d]"
         line %= (i+1, item['title'], item['comments_count'], item['id'])
-        b.append(line)
-        b.append("")
+        bwrite(line)
+        bwrite("")
 
 
 def hacker_news_link():
@@ -37,15 +47,14 @@ def hacker_news_link():
         id = m.group(1)
         item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
         vim.command("edit .hackernews")
-        b = vim.current.buffer
-        b[0] = item['title']
-        b.append("Posted %s by %s" % (item['time_ago'], item['user']))
-        b.append("%d Points / %d Comments" % (item['points'], item['comments_count']))
+        bwrite(item['title'])
+        bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
+        bwrite("%d Points / %d Comments" % (item['points'], item['comments_count']))
         for i, wrap in enumerate(textwrap.wrap("[%s]" % item['url'], width=80)):
-            b.append(wrap)
-        b.append("")
-        b.append("")
-        print_comments(item['comments'], b)
+            bwrite(wrap)
+        bwrite("")
+        bwrite("")
+        print_comments(item['comments'])
         return
 
     # Search for [http] link
@@ -70,18 +79,14 @@ def hacker_news_link():
                 url += b[i][:b[i].find("]")]
             url = url.replace(" ", "").replace("\n", "")
         vim.command("edit .hackernews")
-        b = vim.current.buffer
         content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+url).read()
         for i, line in enumerate(content.split('\n')):
             if not line:
-                b.append("")
+                bwrite("")
                 continue
             line = textwrap.wrap(line, width=80)
             for j, wrap in enumerate(line):
-                if i == 0 and j == 0:
-                    b[0] = wrap
-                else:
-                    b.append(wrap)
+                bwrite(wrap)
         return
 
     print "HackerNews.vim Error: Could not parse [item id]"
@@ -89,10 +94,10 @@ def hacker_news_link():
 
 html = HTMLParser.HTMLParser()
 
-def print_comments(comments, b):
+def print_comments(comments):
     for comment in comments:
         level = comment['level']
-        b.append("%sComment by %s %s:" % ("\t"*level, comment.get('user','???'), comment['time_ago']))
+        bwrite("%sComment by %s %s:" % ("\t"*level, comment.get('user','???'), comment['time_ago']))
         for p in comment['content'].split("<p>"):
             p = html.unescape(p)
             # Convert <a href="http://url/">Text</a> tags
@@ -114,8 +119,8 @@ def print_comments(comments, b):
                                      initial_indent=" "*4*level,
                                      subsequent_indent=" "*4*level)
             for line in contents:
-                b.append(line)
+                bwrite(line)
             if contents:
-                b.append("")
-        b.append("")
-        print_comments(comment['comments'], b)
+                bwrite("")
+        bwrite("")
+        print_comments(comment['comments'])
