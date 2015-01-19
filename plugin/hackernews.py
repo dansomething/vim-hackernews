@@ -12,7 +12,10 @@ API_URL = "http://node-hnapi.herokuapp.com"
 def bwrite(s):
     s = s.encode('utf-8')
     b = vim.current.buffer
-    if not b[0]:
+    if not s.strip() and not b[-1].strip() and not b[-2].strip():
+        # Never write more than two blank lines in a row
+        return
+    elif not b[0]:
         b[0] = s
     else:
         b.append(s)
@@ -99,7 +102,16 @@ def print_comments(comments):
         level = comment['level']
         bwrite("%sComment by %s %s:" % ("\t"*level, comment.get('user','???'), comment['time_ago']))
         for p in comment['content'].split("<p>"):
+            if not p:
+                continue
             p = html.unescape(p)
+
+            code = None
+            if p.find("<code>") >= 0:
+                m = re.search("<pre><code>([\S\s]*?)</code></pre>\n", p)
+                code = m.group(1)
+                p = p.replace(m.group(0), "!CODE!")
+
             # Convert <a href="http://url/">Text</a> tags
             # to markdown equivalent: (Text)[http://url/]
             s = p.find("a>")
@@ -119,8 +131,13 @@ def print_comments(comments):
                                      initial_indent=" "*4*level,
                                      subsequent_indent=" "*4*level)
             for line in contents:
-                bwrite(line)
-            if contents:
+                if line.find("!CODE!") >= 0:
+                    for c in code.split("\n"):
+                        bwrite(" "*4*level + c)
+                    line = " "*4*level + line.replace("!CODE!", "").strip()
+                if line.strip():
+                    bwrite(line)
+            if contents and line.strip():
                 bwrite("")
         bwrite("")
         print_comments(comment['comments'])
