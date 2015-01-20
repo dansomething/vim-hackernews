@@ -10,12 +10,16 @@ API_URL = "http://node-hnapi.herokuapp.com"
 
 
 def bwrite(s):
-    s = s.encode('utf-8')
     b = vim.current.buffer
+    # Never write more than two blank lines in a row
     if not s.strip() and not b[-1].strip() and not b[-2].strip():
-        # Never write more than two blank lines in a row
         return
-    elif not b[0]:
+    # Code block markers for syntax highlighting
+    if s and s[-1] == unichr(160):
+        b[-1] = s
+        return
+    s = s.encode('utf-8')
+    if not b[0]:
         b[0] = s
     else:
         b.append(s)
@@ -106,6 +110,7 @@ def print_comments(comments):
                 continue
             p = html.unescape(p)
 
+            # Extract code block before textwrap to conserve whitespace
             code = None
             if p.find("<code>") >= 0:
                 m = re.search("<pre><code>([\S\s]*?)</code></pre>\n", p)
@@ -132,8 +137,10 @@ def print_comments(comments):
                                      subsequent_indent=" "*4*level)
             for line in contents:
                 if line.find("!CODE!") >= 0:
+                    bwrite(" "*4*level + unichr(160))
                     for c in code.split("\n"):
                         bwrite(" "*4*level + c)
+                    bwrite(" "*4*level + unichr(160))
                     line = " "*4*level + line.replace("!CODE!", "").strip()
                 if line.strip():
                     bwrite(line)
