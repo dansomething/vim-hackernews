@@ -14,11 +14,17 @@ def bwrite(s):
     # Never write more than two blank lines in a row
     if not s.strip() and not b[-1].strip() and not b[-2].strip():
         return
+
+    # Vim buffer.append() cannot accept unicode type,
+    # must first encode to UTF-8 string
+    if isinstance(s, unicode):
+        s = s.encode('utf-8', errors='replace')
+
     # Code block markers for syntax highlighting
-    if s and s[-1] == unichr(160):
+    if s and s[-1] == unichr(160).encode('utf-8'):
         b[-1] = s
         return
-    s = s.encode('utf-8')
+
     if not b[0]:
         b[0] = s
     else:
