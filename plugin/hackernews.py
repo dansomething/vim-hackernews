@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import HTMLParser
 import json
 import re
@@ -36,8 +38,9 @@ def hacker_news():
     vim.command("setlocal noswapfile")
     vim.command("setlocal buftype=nofile")
 
-    bwrite("Hacker News")
-    bwrite("===========")
+    bwrite("┌───┐")
+    bwrite("│ Y │ Hacker News")
+    bwrite("└───┘")
     bwrite("")
 
     news1 = json.loads(urllib2.urlopen(API_URL+"/news").read())
@@ -45,9 +48,27 @@ def hacker_news():
     for i, item in enumerate(news1+news2):
         if 'title' not in item:
             continue
-        line = "%d. %s (%d comments) [%d]"
-        line %= (i+1, item['title'], item['comments_count'], item['id'])
-        bwrite(line)
+        if item['type'] == "link" and item['url'][:4] == "http":
+            line = "%s%d. %s (%s) [%d]"
+            line %= (" " if i+1 < 10 else "", i+1, item['title'], item['domain'], item['id'])
+            bwrite(line)
+            line = "%s%d points by %s %s | %d comments [%d]"
+            line %= (" "*4, item['points'], item['user'], item['time_ago'], item['comments_count'], item['id'])
+            bwrite(line)
+        elif item['type'] == "link":
+            line = "%s%d. %s [%d]"
+            line %= (" " if i+1 < 10 else "", i+1, item['title'], item['id'])
+            bwrite(line)
+            line = "%s%d points by %s %s | %d comments [%d]"
+            line %= (" "*4, item['points'], item['user'], item['time_ago'], item['comments_count'], item['id'])
+            bwrite(line)
+        elif item['type'] == "job":
+            line = "%s%d. %s [%d]"
+            line %= (" " if i+1 < 10 else "", i+1, item['title'], item['id'])
+            bwrite(line)
+            line = "%s%s [%d]"
+            line %= (" "*4, item['time_ago'], item['id'])
+            bwrite(line)
         bwrite("")
 
 
@@ -55,7 +76,7 @@ def hacker_news_link():
     line = vim.current.line
 
     # Search for Hacker News [item id]
-    m = re.search(r"^[0-9]{1,2}.*\[([0-9]+)\]", line)
+    m = re.search(r"\[([0-9]+)\]$", line)
     if m:
         id = m.group(1)
         item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
