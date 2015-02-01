@@ -50,17 +50,20 @@ def hacker_news():
             continue
         if item['type'] == "link" and item['url'][:4] == "http":
             line = "%s%d. %s (%s) [%d]"
-            line %= (" " if i+1 < 10 else "", i+1, item['title'], item['domain'], item['id'])
+            line %= (" " if i+1 < 10 else "", i+1, item['title'],
+                     item['domain'], item['id'])
             bwrite(line)
             line = "%s%d points by %s %s | %d comments [%d]"
-            line %= (" "*4, item['points'], item['user'], item['time_ago'], item['comments_count'], item['id'])
+            line %= (" "*4, item['points'], item['user'], item['time_ago'],
+                     item['comments_count'], item['id'])
             bwrite(line)
         elif item['type'] == "link":
             line = "%s%d. %s [%d]"
             line %= (" " if i+1 < 10 else "", i+1, item['title'], item['id'])
             bwrite(line)
-            line = "%s%d points by %s %s | %d comments [%d]"
-            line %= (" "*4, item['points'], item['user'], item['time_ago'], item['comments_count'], item['id'])
+            line = "%s%d points by %s %s | %d comments [%s]"
+            line %= (" "*4, item['points'], item['user'], item['time_ago'],
+                     item['comments_count'], item['id'])
             bwrite(line)
         elif item['type'] == "job":
             line = "%s%d. %s [%d]"
@@ -84,8 +87,9 @@ def hacker_news_link():
         bwrite(item['title'])
         bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
         bwrite("%d Points / %d Comments" % (item['points'], item['comments_count']))
-        for i, wrap in enumerate(textwrap.wrap("[%s]" % item['url'], width=80)):
-            bwrite(wrap)
+        if item['url'].find("item?id=") == 0:
+            item['url'] = "http://news.ycombinator.com/" + item['url']
+        bwrite("[%s]" % item['url'])
         bwrite("")
         bwrite("")
         print_comments(item['comments'])
@@ -113,6 +117,19 @@ def hacker_news_link():
                 url += b[i][:b[i].find("]")]
             url = url.replace(" ", "").replace("\n", "")
         vim.command("edit .hackernews")
+
+        if url.find("http://news.ycombinator.com/item?id=") == 0:
+            id = url[url.find("item?id=")+8:]
+            item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
+            bwrite(item['title'])
+            bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
+            bwrite("%d Points / %d Comments" % (item['points'], item['comments_count']))
+            bwrite("[http://news.ycombinator.com/item?id=" + str(id) + "]")
+            bwrite("")
+            bwrite("")
+            print_comments(item['comments'])
+            return
+
         content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+url).read()
         for i, line in enumerate(content.split('\n')):
             if not line:
