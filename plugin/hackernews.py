@@ -66,8 +66,9 @@ def hacker_news():
                      item['comments_count'], item['id'])
             bwrite(line)
         elif item['type'] == "job":
-            line = "%s%d. %s [%d]"
-            line %= (" " if i+1 < 10 else "", i+1, item['title'], item['id'])
+            line = "%s%d. %s (%s) [%d]"
+            line %= (" " if i+1 < 10 else "", i+1, item['title'],
+                     item['domain'], item['id'])
             bwrite(line)
             line = "%s%s [%d]"
             line %= (" "*4, item['time_ago'], item['id'])
