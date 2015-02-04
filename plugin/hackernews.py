@@ -85,9 +85,10 @@ def hacker_news_link():
         id = m.group(1)
         item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
         vim.command("edit .hackernews")
-        bwrite(item['title'])
-        bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
-        bwrite("%d Points / %d Comments" % (item['points'], item['comments_count']))
+        bwrite("%s (%s)" % (item['title'], item['domain']))
+        bwrite("%d points by %s %s | %d comments"
+               % (item['points'], item['user'], item['time_ago'],
+                  item['comments_count']))
         if item['url'].find("item?id=") == 0:
             item['url'] = "http://news.ycombinator.com/" + item['url']
         bwrite("[%s]" % item['url'])
