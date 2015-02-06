@@ -26,3 +26,10 @@ Plugin 'ryanss/vim-hackernews'
 ```
 NeoBundle 'ryanss/vim-hackernews'
 ```
+
+
+License
+-------
+
+Code is available according to the MIT License
+(see [LICENSE](https://github.com/ryanss/vim-hackernews/raw/master/LICENSE)).
