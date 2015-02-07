@@ -6,6 +6,7 @@ import re
 import textwrap
 import urllib2
 import vim
+import webbrowser
 
 
 API_URL = "http://node-hnapi.herokuapp.com"
@@ -39,7 +40,7 @@ def hacker_news():
     vim.command("setlocal buftype=nofile")
 
     bwrite("┌───┐")
-    bwrite("│ Y │ Hacker News")
+    bwrite("│ Y │ Hacker News (news.ycombinator.com)")
     bwrite("└───┘")
     bwrite("")
 
@@ -76,13 +77,17 @@ def hacker_news():
         bwrite("")
 
 
-def hacker_news_link():
+def hacker_news_link(external=False):
     line = vim.current.line
 
     # Search for Hacker News [item id]
     m = re.search(r"\[([0-9]+)\]$", line)
     if m:
         id = m.group(1)
+        if external:
+            browser = webbrowser.get()
+            browser.open("https://news.ycombinator.com/item?id="+id)
+            return
         item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
         vim.command("edit .hackernews")
         bwrite("%s (%s)" % (item['title'], item['domain']))
@@ -118,11 +123,15 @@ def hacker_news_link():
             if i != start:
                 url += b[i][:b[i].find("]")]
             url = url.replace(" ", "").replace("\n", "")
-        vim.command("edit .hackernews")
 
         if url.find("http://news.ycombinator.com/item?id=") == 0:
             id = url[url.find("item?id=")+8:]
+            if external:
+                browser = webbrowser.get()
+                browser.open("https://news.ycombinator.com/item?id="+id)
+                return
             item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
+            vim.command("edit .hackernews")
             bwrite(item['title'])
             bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
             bwrite("%d Points / %d Comments" % (item['points'], item['comments_count']))
@@ -132,6 +141,11 @@ def hacker_news_link():
             print_comments(item['comments'])
             return
 
+        if external:
+            browser = webbrowser.get()
+            browser.open(url)
+            return
+        vim.command("edit .hackernews")
         content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+url).read()
         for i, line in enumerate(content.split('\n')):
             if not line:
