@@ -3,6 +3,10 @@ vim-hackernews
 
 Browse [Hacker News](https://news.ycombinator.com) from inside Vim.
 
+![Hacker News Front Page in Vim](https://github.com/ryanss/vim-hackernews/raw/master/screenshots/vim-hackernews-home.png)
+
+![Hacker News Comments in Vim](https://github.com/ryanss/vim-hackernews/raw/master/screenshots/vim-hackernews-item.png)
+
 Uses [cheeaun's Unofficial Hacker News API](https://github.com/cheeaun/node-hnapi)
 to retrieve home page stories and comments and
 [FUCK YEAH MARKDOWN](http://fuckyeahmarkdown.com) for rendering HTML articles
