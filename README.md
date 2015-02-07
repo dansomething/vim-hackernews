@@ -9,6 +9,17 @@ to retrieve home page stories and comments and
 as text.
 
 
+Basic Usage
+-----------
+
+* Open the Hacker News home page in Vim by executing the `:HackerNews` command
+* Press lowercase `o` to open links in Vim
+* Press uppercase `O` to open links in default web browser
+* Press lowercase `u` to go back (or whatever you've remapped `undo` to)
+* Press `Ctrl+r` to go forward (or whatever you're remapped `redo` to)
+* Execute the `:bd` command to close and remove the Hacker News buffer
+
+
 Installation
 ------------
 
