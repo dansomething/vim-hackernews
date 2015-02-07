@@ -5,7 +5,7 @@
 "  Author:  ryanss <ryanssdev@icloud.com>
 "  Website: https://github.com/ryanss/vim-hackernews
 "  License: MIT (see LICENSE file)
-"  Version: 0.1
+"  Version: 0.1.1
 
 
 if !has('python')
