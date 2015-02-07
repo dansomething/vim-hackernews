@@ -10,6 +10,7 @@ import webbrowser
 
 
 API_URL = "http://node-hnapi.herokuapp.com"
+MARKDOWN_URL = "http://fuckyeahmarkdown.com/go/?read=1&u="
 
 
 def bwrite(s):
@@ -49,28 +50,16 @@ def hacker_news():
     for i, item in enumerate(news1+news2):
         if 'title' not in item:
             continue
-        if item['type'] == "link" and item['url'][:4] == "http":
-            line = "%s%d. %s (%s) [%d]"
-            line %= (" " if i+1 < 10 else "", i+1, item['title'],
-                     item['domain'], item['id'])
-            bwrite(line)
-            line = "%s%d points by %s %s | %d comments [%d]"
-            line %= (" "*4, item['points'], item['user'], item['time_ago'],
-                     item['comments_count'], item['id'])
-            bwrite(line)
-        elif item['type'] == "link":
-            line = "%s%d. %s [%d]"
-            line %= (" " if i+1 < 10 else "", i+1, item['title'], item['id'])
-            bwrite(line)
+        line = "%s%d. %s (%s) [%d]"
+        line %= (" " if i+1 < 10 else "", i+1, item['title'],
+                 item['domain'], item['id'])
+        bwrite(line)
+        if item['type'] == "link":
             line = "%s%d points by %s %s | %d comments [%s]"
             line %= (" "*4, item['points'], item['user'], item['time_ago'],
-                     item['comments_count'], item['id'])
+                     item['comments_count'], str(item['id']))
             bwrite(line)
         elif item['type'] == "job":
-            line = "%s%d. %s (%s) [%d]"
-            line %= (" " if i+1 < 10 else "", i+1, item['title'],
-                     item['domain'], item['id'])
-            bwrite(line)
             line = "%s%s [%d]"
             line %= (" "*4, item['time_ago'], item['id'])
             bwrite(line)
@@ -134,7 +123,8 @@ def hacker_news_link(external=False):
             vim.command("edit .hackernews")
             bwrite(item['title'])
             bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
-            bwrite("%d Points / %d Comments" % (item['points'], item['comments_count']))
+            bwrite("%d Points / %d Comments"
+                   % (item['points'], item['comments_count']))
             bwrite("[http://news.ycombinator.com/item?id=" + str(id) + "]")
             bwrite("")
             bwrite("")
@@ -146,7 +136,7 @@ def hacker_news_link(external=False):
             browser.open(url)
             return
         vim.command("edit .hackernews")
-        content = urllib2.urlopen("http://fuckyeahmarkdown.com/go/?read=1&u="+url).read()
+        content = urllib2.urlopen(MARKDOWN_URL+url).read()
         for i, line in enumerate(content.split('\n')):
             if not line:
                 bwrite("")
@@ -161,10 +151,12 @@ def hacker_news_link(external=False):
 
 html = HTMLParser.HTMLParser()
 
+
 def print_comments(comments):
     for comment in comments:
         level = comment['level']
-        bwrite("%sComment by %s %s:" % ("\t"*level, comment.get('user','???'), comment['time_ago']))
+        bwrite("%sComment by %s %s:"
+               % ("\t"*level, comment.get('user', '???'), comment['time_ago']))
         for p in comment['content'].split("<p>"):
             if not p:
                 continue
@@ -183,12 +175,14 @@ def print_comments(comments):
             while s > 0:
                 s += 2
                 section = p[:s]
-                m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>", section)
+                m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>",
+                              section)
                 # Do not bother with anchor text if it is same as href url
                 if m.group(1)[:20] == m.group(2)[:20]:
                     p = p.replace(m.group(0), "[%s]" % m.group(1))
                 else:
-                    p = p.replace(m.group(0), "(%s)[%s]" % (m.group(2), m.group(1)))
+                    p = p.replace(m.group(0),
+                                  "(%s)[%s]" % (m.group(2), m.group(1)))
                 s = p.find("a>")
 
             contents = textwrap.wrap(re.sub('<[^<]+?>', '', p),
