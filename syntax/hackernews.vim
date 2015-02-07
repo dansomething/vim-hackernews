@@ -24,5 +24,11 @@ syn region Constant start="\[http" end="\]"
 " Highlight code blocks
 syn region Statement start="^\s+ " end="^\s "
 
+" Highlight Hacker News header orange
+syn match Title /^┌.*$/
+syn match Title /^│.*$/
+syn match Title /^└.*$/
+highlight Title ctermfg=208 guifg=#ff6600
+
 
 let b:current_syntax = "hackernews"
