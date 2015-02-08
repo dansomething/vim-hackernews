@@ -58,6 +58,9 @@ def hacker_news():
     try:
         news1 = json.loads(urllib2.urlopen(API_URL+"/news", timeout=5).read())
         news2 = json.loads(urllib2.urlopen(API_URL+"/news2", timeout=5).read())
+    except urllib2.HTTPError, e:
+        print "HackerNews.vim Error: %s" % str(e)
+        return
     except:
         print "HackerNews.vim Error: HTTP Request Timeout"
         return
@@ -100,6 +103,9 @@ def hacker_news_link(external=False):
         try:
             item = json.loads(urllib2.urlopen(API_URL+"/item/"+id,
                               timeout=5).read())
+        except urllib2.HTTPError, e:
+            print "HackerNews.vim Error: %s" % str(e)
+            return
         except:
             print "HackerNews.vim Error: HTTP Request Timeout"
             return
@@ -167,6 +173,9 @@ def hacker_news_link(external=False):
             return
         try:
             content = urllib2.urlopen(MARKDOWN_URL+url, timeout=5).read()
+        except urllib2.HTTPError, e:
+            print "HackerNews.vim Error: %s" % str(e)
+            return
         except:
             print "HackerNews.vim Error: HTTP Request Timeout"
             return
