@@ -128,7 +128,7 @@ def hacker_news_link(external=False):
                 url += b[i][:b[i].find("]")]
             url = url.replace(" ", "").replace("\n", "")
 
-        if url.find("http://news.ycombinator.com/item?id=") == 0:
+        if url.find("news.ycombinator.com/item?id=") > 0:
             id = url[url.find("item?id=")+8:]
             if external:
                 browser = webbrowser.get()
