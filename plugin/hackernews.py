@@ -55,8 +55,13 @@ def hacker_news():
     bwrite("└───┘")
     bwrite("")
 
-    news1 = json.loads(urllib2.urlopen(API_URL+"/news").read())
-    news2 = json.loads(urllib2.urlopen(API_URL+"/news2").read())
+    try:
+        news1 = json.loads(urllib2.urlopen(API_URL+"/news", timeout=5).read())
+        news2 = json.loads(urllib2.urlopen(API_URL+"/news2", timeout=5).read())
+    except:
+        print "HackerNews.vim Error: HTTP Request Timeout"
+        return
+
     for i, item in enumerate(news1+news2):
         if 'title' not in item:
             continue
@@ -92,7 +97,12 @@ def hacker_news_link(external=False):
             browser = webbrowser.get()
             browser.open("https://news.ycombinator.com/item?id="+id)
             return
-        item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
+        try:
+            item = json.loads(urllib2.urlopen(API_URL+"/item/"+id,
+                              timeout=5).read())
+        except:
+            print "HackerNews.vim Error: HTTP Request Timeout"
+            return
         vim.command("edit .hackernews")
         bwrite("%s (%s)" % (item['title'], item['domain']))
         bwrite("%d points by %s %s | %d comments"
@@ -134,7 +144,12 @@ def hacker_news_link(external=False):
                 browser = webbrowser.get()
                 browser.open("https://news.ycombinator.com/item?id="+id)
                 return
-            item = json.loads(urllib2.urlopen(API_URL+"/item/"+id).read())
+            try:
+                item = json.loads(urllib2.urlopen(API_URL+"/item/"+id,
+                                  timeout=5).read())
+            except:
+                print "HackerNews.vim Error: HTTP Request Timeout"
+                return
             vim.command("edit .hackernews")
             bwrite(item['title'])
             bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
@@ -150,8 +165,12 @@ def hacker_news_link(external=False):
             browser = webbrowser.get()
             browser.open(url)
             return
+        try:
+            content = urllib2.urlopen(MARKDOWN_URL+url, timeout=5).read()
+        except:
+            print "HackerNews.vim Error: HTTP Request Timeout"
+            return
         vim.command("edit .hackernews")
-        content = urllib2.urlopen(MARKDOWN_URL+url).read()
         for i, line in enumerate(content.split('\n')):
             if not line:
                 bwrite("")
@@ -160,8 +179,6 @@ def hacker_news_link(external=False):
             for j, wrap in enumerate(line):
                 bwrite(wrap)
         return
-
-    print "HackerNews.vim Error: Could not parse [item id]"
 
 
 html = HTMLParser.HTMLParser()
