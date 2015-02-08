@@ -8,5 +8,5 @@
 "  Version: 0.1.1
 
 
-noremap o :python hacker_news_link()<cr>
-noremap O :python hacker_news_link(external=True)<cr>
+noremap <buffer> o :python hacker_news_link()<cr>
+noremap <buffer> O :python hacker_news_link(external=True)<cr>
