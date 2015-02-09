@@ -256,7 +256,7 @@ def print_comments(comments):
             # Extract code block before textwrap to conserve whitespace
             code = None
             if p.find("<code>") >= 0:
-                m = re.search("<pre><code>([\S\s]*?)</code></pre>\n", p)
+                m = re.search("<pre><code>([\S\s]*?)</code></pre>", p)
                 code = m.group(1)
                 p = p.replace(m.group(0), "!CODE!")
 
