@@ -18,11 +18,16 @@ syn match Ignore /\s\[[0-9]\{3,}\]$/
 
 " Make sure `Ignore` highlight group is hidden
 " Some colorschemes do not hide the `Ignore` group (ex. Solarized)
-if has('gui_running')
-    highlight Ignore guifg=bg
-else
-    highlight Ignore ctermfg=bg
-endif
+" An exception will be raised here if ctermfg=NONE which is sometimes set
+" when using a transparent terminal so we wrap these commands in try/catch
+try
+    if has('gui_running')
+        highlight Ignore guifg=bg
+    else
+        highlight Ignore ctermfg=bg
+    endif
+catch
+endtry
 
 " Remove emphesis from all components of main page item except title
 syn match Comment /^\s*[0-9]\{1,2}\.\s/
