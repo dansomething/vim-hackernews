@@ -110,13 +110,23 @@ def hacker_news_link(external=False):
             print "HackerNews.vim Error: HTTP Request Timeout"
             return
         vim.command("edit .hackernews")
-        bwrite("%s (%s)" % (item['title'], item['domain']))
-        bwrite("%d points by %s %s | %d comments"
-               % (item['points'], item['user'], item['time_ago'],
-                  item['comments_count']))
-        if item['url'].find("item?id=") == 0:
-            item['url'] = "http://news.ycombinator.com/" + item['url']
-        bwrite("[%s]" % item['url'])
+        if 'domain' in item:
+            bwrite("%s (%s)" % (item['title'], item['domain']))
+        else:
+            bwrite(item['title'])
+        if item.get('comments_count', None):
+            bwrite("%d points by %s %s | %d comments"
+                   % (item['points'], item['user'], item['time_ago'],
+                      item['comments_count']))
+        else:
+            bwrite(item['time_ago'])
+        if 'url' in item:
+            if item['url'].find("item?id=") == 0:
+                item['url'] = "http://news.ycombinator.com/" + item['url']
+            bwrite("[%s]" % item['url'])
+        if 'content' in item:
+            bwrite("")
+            print_content(item['content'])
         bwrite("")
         bwrite("")
         print_comments(item['comments'])
@@ -157,11 +167,21 @@ def hacker_news_link(external=False):
                 print "HackerNews.vim Error: HTTP Request Timeout"
                 return
             vim.command("edit .hackernews")
-            bwrite(item['title'])
-            bwrite("Posted %s by %s" % (item['time_ago'], item['user']))
-            bwrite("%d Points / %d Comments"
-                   % (item['points'], item['comments_count']))
-            bwrite("[http://news.ycombinator.com/item?id=" + str(id) + "]")
+            if 'domain' in item:
+                bwrite("%s (%s)" % (item['title'], item['domain']))
+            else:
+                bwrite(item['title'])
+            if item.get('comments_count', None):
+                bwrite("%d points by %s %s | %d comments"
+                       % (item['points'], item['user'], item['time_ago'],
+                          item['comments_count']))
+            else:
+                bwrite(item['time_ago'])
+            if 'url' in item:
+                bwrite("[http://news.ycombinator.com/item?id=" + str(id) + "]")
+            if 'content' in item:
+                bwrite("")
+                print_content(item['content'])
             bwrite("")
             bwrite("")
             print_comments(item['comments'])
@@ -191,6 +211,36 @@ def hacker_news_link(external=False):
 
 
 html = HTMLParser.HTMLParser()
+
+
+def print_content(content):
+    for p in content.split("<p>"):
+        if not p:
+            continue
+        p = html.unescape(p)
+
+        # Convert <a href="http://url/">Text</a> tags
+        # to markdown equivalent: (Text)[http://url/]
+        s = p.find("a>")
+        while s > 0:
+            s += 2
+            section = p[:s]
+            m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>",
+                          section)
+            # Do not bother with anchor text if it is same as href url
+            if m.group(1)[:20] == m.group(2)[:20]:
+                p = p.replace(m.group(0), "[%s]" % m.group(1))
+            else:
+                p = p.replace(m.group(0),
+                              "(%s)[%s]" % (m.group(2), m.group(1)))
+            s = p.find("a>")
+
+        contents = textwrap.wrap(re.sub('<[^<]+?>', '', p), width=80)
+        for line in contents:
+            if line.strip():
+                bwrite(line)
+        if contents and line.strip():
+            bwrite("")
 
 
 def print_comments(comments):
