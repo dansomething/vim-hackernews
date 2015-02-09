@@ -14,6 +14,11 @@ if !has('python')
 endif
 
 
+" Filetype plugins and syntax highlighting should be enabled
+filetype plugin on
+syntax on
+
+
 " Import Python code
 execute "python import sys"
 execute "python sys.path.append(r'" . expand("<sfile>:p:h") . "')"
