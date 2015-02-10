@@ -51,7 +51,7 @@ def main():
     vim.command("setlocal buftype=nofile")
 
     bwrite("┌───┐")
-    bwrite("│ Y │ Hacker New (news.ycombinator.com)")
+    bwrite("│ Y │ Hacker News (news.ycombinator.com)")
     bwrite("└───┘")
     bwrite("")
 
