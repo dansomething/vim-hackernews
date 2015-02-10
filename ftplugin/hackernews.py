@@ -45,13 +45,13 @@ def bwrite(s):
         b.append(s)
 
 
-def hacker_news():
+def main():
     vim.command("edit .hackernews")
     vim.command("setlocal noswapfile")
     vim.command("setlocal buftype=nofile")
 
     bwrite("┌───┐")
-    bwrite("│ Y │ Hacker News (news.ycombinator.com)")
+    bwrite("│ Y │ Hacker New (news.ycombinator.com)")
     bwrite("└───┘")
     bwrite("")
 
@@ -89,7 +89,7 @@ def hacker_news():
         bwrite("")
 
 
-def hacker_news_link(external=False):
+def link(external=False):
     line = vim.current.line
 
     # Search for Hacker News [item id]
@@ -111,7 +111,7 @@ def hacker_news_link(external=False):
             return
 
         save_pos()
-        vim.command("edit .hackernews")
+        del vim.current.buffer[:]
         if 'domain' in item:
             bwrite("%s (%s)" % (item['title'], item['domain']))
         else:
@@ -169,7 +169,7 @@ def hacker_news_link(external=False):
                 print "HackerNews.vim Error: HTTP Request Timeout"
                 return
             save_pos()
-            vim.command("edit .hackernews")
+            del vim.current.buffer[:]
             if 'domain' in item:
                 bwrite("%s (%s)" % (item['title'], item['domain']))
             else:
@@ -203,7 +203,7 @@ def hacker_news_link(external=False):
             print "HackerNews.vim Error: HTTP Request Timeout"
             return
         save_pos()
-        vim.command("edit .hackernews")
+        del vim.current.buffer[:]
         for i, line in enumerate(content.split('\n')):
             if not line:
                 bwrite("")
