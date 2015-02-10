@@ -22,7 +22,7 @@ syntax on
 " Import Python code
 execute "python import sys"
 execute "python sys.path.append(r'" . expand("<sfile>:p:h") . "')"
-execute "python from hackernews import hacker_news, hacker_news_link"
+execute "python from hackernews import hacker_news, hacker_news_link, recall_pos"
 
 
 command! HackerNews python hacker_news()

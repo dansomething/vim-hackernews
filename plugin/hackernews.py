@@ -109,6 +109,8 @@ def hacker_news_link(external=False):
         except:
             print "HackerNews.vim Error: HTTP Request Timeout"
             return
+
+        save_pos()
         vim.command("edit .hackernews")
         if 'domain' in item:
             bwrite("%s (%s)" % (item['title'], item['domain']))
@@ -166,6 +168,7 @@ def hacker_news_link(external=False):
             except:
                 print "HackerNews.vim Error: HTTP Request Timeout"
                 return
+            save_pos()
             vim.command("edit .hackernews")
             if 'domain' in item:
                 bwrite("%s (%s)" % (item['title'], item['domain']))
@@ -199,6 +202,7 @@ def hacker_news_link(external=False):
         except:
             print "HackerNews.vim Error: HTTP Request Timeout"
             return
+        save_pos()
         vim.command("edit .hackernews")
         for i, line in enumerate(content.split('\n')):
             if not line:
@@ -208,6 +212,21 @@ def hacker_news_link(external=False):
             for j, wrap in enumerate(line):
                 bwrite(wrap)
         return
+
+
+def save_pos():
+    marks = vim.eval("g:hackernews_marks")
+    m = vim.current.buffer[0].encode('hex')
+    marks[m] = list(vim.current.window.cursor)
+    vim.command("let g:hackernews_marks = %s" % str(marks))
+
+
+def recall_pos():
+    marks = vim.eval("g:hackernews_marks")
+    m = vim.current.buffer[0].encode('hex')
+    if m in marks:
+        mark = marks[m]
+        vim.current.window.cursor = (int(mark[0]), int(mark[1]))
 
 
 html = HTMLParser.HTMLParser()
