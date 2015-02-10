@@ -31,7 +31,7 @@ endtry
 
 " Remove emphesis from all components of main page item except title
 syn match Comment /^\s*[0-9]\{1,2}\.\s/
-syn match Comment /\s(\S\+\.\S\+)/
+syn match Comment /\s([^\[]\S\+\.\S\+)/
 syn match Comment /^\s\{4}[0-9an]\+\s.\+\sago/
 syn match Comment /^.*ago\s|.*comments/
 syn match Comment /^[0-9an]\+\s.\+\sago$/
