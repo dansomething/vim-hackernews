@@ -35,7 +35,7 @@ def bwrite(s):
         s = s.encode('utf-8', errors='replace')
 
     # Code block markers for syntax highlighting
-    if s and s[-1] == unichr(160).encode('utf-8'):
+    if s == unichr(160).encode('utf-8') and not b[-1]:
         b[-1] = s
         return
 
@@ -301,10 +301,11 @@ def print_comments(comments):
                                      subsequent_indent=" "*4*level)
             for line in contents:
                 if line.find("!CODE!") >= 0:
-                    bwrite(" "*4*level + unichr(160))
+                    bwrite(unichr(160))
                     for c in code.split("\n"):
-                        bwrite(" "*4*level + c)
-                    bwrite(" "*4*level + unichr(160))
+                        if c.strip():
+                            bwrite(" "*4*level + c)
+                    bwrite(unichr(160))
                     line = " "*4*level + line.replace("!CODE!", "").strip()
                 if line.strip():
                     bwrite(line)

@@ -43,7 +43,7 @@ syn match Comment /^\s*Comment.*$/
 syn region Constant start="\[http" end="\]"
 
 " Highlight code blocks
-syn region Statement start="^\s\+ " end="^\s\+ "
+syn region Statement start="^ " end="^ "
 
 " Highlight Hacker News header orange
 syn match Title /^┌.*$/
