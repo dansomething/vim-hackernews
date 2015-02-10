@@ -37,7 +37,7 @@ syn match Comment /^.*ago\s|.*comments/
 syn match Comment /^[0-9an]\+\s.\+\sago$/
 
 " Comment titles
-syn match Comment /^\s*Comment.*$/
+syn match Comment /^\s*Comment\sby.\+ago:$/
 
 " Highlight links
 syn region Constant start="\[http" end="\]"
