@@ -1,0 +1,58 @@
+"  vim-hackernews
+"  --------------
+"  Browse Hacker News (news.ycombinator.com) inside Vim.
+"
+"  Author:  ryanss <ryanssdev@icloud.com>
+"  Website: https://github.com/ryanss/vim-hackernews
+"  License: MIT (see LICENSE file)
+"  Version: 0.1.1
+
+Execute (Test Plugin Loaded):
+  AssertEqual 1, filereadable('doc/hackernews.txt')
+  AssertEqual 1, filereadable('ftplugin/hackernews.py')
+  AssertEqual 1, filereadable('ftplugin/hackernews.vim')
+  AssertEqual 1, filereadable('plugin/hackernews.vim')
+  AssertEqual 1, filereadable('syntax/hackernews.vim')
+  redir @a
+  au BufRead *.hackernews
+  redir @b
+  au BufNewFile *.hackernews
+  redir @c
+  command HackerNews
+  redir END
+
+Do (Test autocmd BufRead *.hackernews):
+  "apdd
+
+Expect (set filetype=hackernews):
+  --- Auto-Commands ---
+  BufRead
+      *.hackernews
+                set filetype=hackernews
+
+Do (Test autocmd BufNewFile *.hackernews):
+  "bpdd
+
+Expect (set filetype=hackernews):
+  --- Auto-Commands ---
+  BufNewFile
+      *.hackernews
+                set filetype=hackernews
+
+Do (Test HackerNews Defined):
+  "cpdd
+
+Expect (edit .hackernews):
+      Name        Args Range Complete  Definition
+      HackerNews  0                    edit .hackernews
+
+Execute (Test HackerNews Command):
+  HackerNews
+
+Then (Test Front Page):
+  AssertEqual getline(1), '┌───┐'
+  AssertEqual getline(2), '│ Y │ Hacker News (news.ycombinator.com)'
+  AssertEqual getline(3), '└───┘'
+  AssertEqual 'Comment', SyntaxAt(5,2),  'Item number syntax'
+  AssertEqual 'Comment', SyntaxAt(6,5),  'Point/user/comment line syntax'
+  AssertEqual '', SyntaxAt(5,5),         'Item title syntax'
