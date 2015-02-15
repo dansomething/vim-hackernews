@@ -1,4 +1,4 @@
-vim-hackernews
+vim-hackernews [![Build Status](https://travis-ci.org/ryanss/vim-hackernews.svg)](https://travis-ci.org/ryanss/vim-hackernews)
 ==============
 
 Browse [Hacker News](https://news.ycombinator.com) inside Vim.
