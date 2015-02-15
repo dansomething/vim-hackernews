@@ -37,5 +37,6 @@ execute "python hackernews.main()"
 
 noremap <buffer> o :python hackernews.link()<cr>
 noremap <buffer> O :python hackernews.link(external=True)<cr>
+noremap <buffer> gx :python hackernews.link(external=True)<cr>
 noremap <buffer> u u:python hackernews.recall_pos()<cr>
 noremap <buffer> <C-r> <C-r>:python hackernews.recall_pos()<cr>
