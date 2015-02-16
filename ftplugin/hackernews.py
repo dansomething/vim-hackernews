@@ -69,9 +69,9 @@ def main():
         if 'title' not in item:
             continue
         if 'domain' in item:
-            line = "%s%d. %s (%s) [%d]"
+            line = "%s%d. %s (%s) [%s]%s"
             line %= (" " if i+1 < 10 else "", i+1, item['title'],
-                     item['domain'], item['id'])
+                     item['domain'], item['url'], unichr(160))
             bwrite(line)
         else:
             line = "%s%d. %s [%d]"

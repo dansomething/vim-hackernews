@@ -13,8 +13,9 @@ if exists("b:current_syntax")
 endif
 
 
-" Hide hacker news item id at end of main page lines
+" Hide hacker news item id or url at end of front page lines
 syn match Ignore /\s\[[0-9]\{3,}\]$/
+syn match Ignore /\s\[http.\+\] $/
 
 " Make sure `Ignore` highlight group is hidden
 " Some colorschemes do not hide the `Ignore` group (ex. Solarized)
