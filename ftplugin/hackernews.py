@@ -246,15 +246,18 @@ def print_content(content):
             section = p[:s]
             m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>",
                           section)
-            # Do not bother with anchor text if it is same as href url
-            if m.group(1)[:20] == m.group(2)[:20]:
-                p = p.replace(m.group(0), "[%s]" % m.group(1))
+            if m:
+                # Do not bother with anchor text if it is same as href url
+                if m.group(1)[:20] == m.group(2)[:20]:
+                    p = p.replace(m.group(0), "[%s]" % m.group(1))
+                else:
+                    p = p.replace(m.group(0),
+                                  "(%s)[%s]" % (m.group(2), m.group(1)))
+                s = p.find("a>")
             else:
-                p = p.replace(m.group(0),
-                              "(%s)[%s]" % (m.group(2), m.group(1)))
-            s = p.find("a>")
+                s = p.find("a>", s)
 
-        contents = textwrap.wrap(re.sub('<[^<]+?>', '', p), width=80)
+        contents = textwrap.wrap(re.sub(p), width=80)
         for line in contents:
             if line.strip():
                 bwrite(line)
@@ -287,16 +290,18 @@ def print_comments(comments):
                 section = p[:s]
                 m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>",
                               section)
-                # Do not bother with anchor text if it is same as href url
-                if m.group(1)[:20] == m.group(2)[:20]:
-                    p = p.replace(m.group(0), "[%s]" % m.group(1))
+                if m:
+                    # Do not bother with anchor text if it is same as href url
+                    if m.group(1)[:20] == m.group(2)[:20]:
+                        p = p.replace(m.group(0), "[%s]" % m.group(1))
+                    else:
+                        p = p.replace(m.group(0),
+                                      "(%s)[%s]" % (m.group(2), m.group(1)))
+                    s = p.find("a>")
                 else:
-                    p = p.replace(m.group(0),
-                                  "(%s)[%s]" % (m.group(2), m.group(1)))
-                s = p.find("a>")
+                    s = p.find("a>", s)
 
-            contents = textwrap.wrap(re.sub('<[^<]+?>', '', p),
-                                     width=80,
+            contents = textwrap.wrap(p, width=80,
                                      initial_indent=" "*4*level,
                                      subsequent_indent=" "*4*level)
             for line in contents:

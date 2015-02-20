@@ -43,6 +43,10 @@ syn match Comment /^\s*Comment\sby.\+ago:$/
 " Highlight links
 syn region Constant start="\[http" end="\]"
 
+" Italics <i> tags
+syn region Italics start="<i>" end="</i>"
+highlight Italics gui=italic
+
 " Highlight code blocks
 syn region Statement start="^ " end="^ "
 
