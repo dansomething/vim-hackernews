@@ -16,7 +16,8 @@ as text.
 Basic Usage
 -----------
 
-* Open the Hacker News home page in Vim by executing the `:HackerNews` command
+* Open the Hacker News front page in Vim by executing the `:HackerNews` command
+* Move between items on the front page with uppercase `J` and `K`
 * Press lowercase `o` to open links in Vim
 * Press uppercase `O` to open links in default web browser
 * Press lowercase `u` to go back (or whatever you've remapped `undo` to)
@@ -43,17 +44,12 @@ NeoBundle 'ryanss/vim-hackernews'
 ```
 
 
-Roadmap
--------
+Running Tests
+-------------
 
-* Add option to format text like different programming languages to make it
-  less obvious that you are reading Hacker News in Vim
-* Add configuration value for custom text width
-* Add configuration value to specify external browser
-* Move away from unofficial API by creating server to cache official Hacker
-  News API data
-* Move away from fuckyeahmarkdown.com by creating server that uses
-  python-readability to convert article HTML to text
+```bash
+$ vim -c Vader! tests.vader
+```
 
 
 Contributions

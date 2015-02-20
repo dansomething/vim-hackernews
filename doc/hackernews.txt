@@ -8,7 +8,8 @@ Version: 0.1.1
 
 BASIC USAGE                                     *hackernews-usage*
 
-* Open the Hacker News home page in Vim by executing the `:HackerNews` command
+* Open the Hacker News front page in Vim by executing the `:HackerNews` command
+* Move between items on the front page with uppercase `J` and `K`
 * Press lowercase `o` to open links in Vim
 * Press uppercase `O` to open links in default web browser
 * Press lowercase `u` to go back (or whatever you've remapped `undo` to)

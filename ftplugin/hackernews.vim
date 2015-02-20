@@ -40,3 +40,20 @@ noremap <buffer> O :python hackernews.link(external=True)<cr>
 noremap <buffer> gx :python hackernews.link(external=True)<cr>
 noremap <buffer> u u:python hackernews.recall_pos()<cr>
 noremap <buffer> <C-r> <C-r>:python hackernews.recall_pos()<cr>
+
+
+" Helper motion to browse front page easier
+function! s:NextItem(backwards)
+    if match(getline('.'), '^\s\{4}.\+ago') >= 0
+        " Move to next/previous comment line
+        let pattern = '^\s\{4}[0-9]'
+    else
+        " Move to next/previous title line
+        let pattern = '^\s*\d\+\.\s.'
+    endif
+    let dir = a:backwards? '?' : '/'
+    execute 'silent normal! ' . dir . pattern . dir . 'e\r'
+endfunction
+
+noremap <buffer> J :call <SID>NextItem(0)<cr>
+noremap <buffer> K :call <SID>NextItem(1)<cr>
