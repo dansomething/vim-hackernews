@@ -10,13 +10,23 @@
 #  Version: 0.1.1
 
 
-import HTMLParser
+from __future__ import print_function
+import binascii
 import json
 import re
 import textwrap
-import urllib2
 import vim
 import webbrowser
+import sys
+if sys.version_info >= (3, 0):
+    from html.parser import HTMLParser
+    from urllib.request import urlopen
+    from urllib.error import HTTPError
+    unicode = bytes
+    unichr = chr
+else:
+    from HTMLParser import HTMLParser
+    from urllib2 import urlopen, HTTPError
 
 
 API_URL = "http://node-hnapi.herokuapp.com"
@@ -45,6 +55,12 @@ def bwrite(s):
         b.append(s)
 
 
+def hex(s):
+    if sys.version_info >= (3, 0):
+        return str(binascii.hexlify(bytes(vim.current.buffer[0], 'utf-8')))
+    return binascii.hexlify(s)
+
+
 def main():
     vim.command("edit .hackernews")
     vim.command("setlocal noswapfile")
@@ -56,13 +72,13 @@ def main():
     bwrite("")
 
     try:
-        news1 = json.loads(urllib2.urlopen(API_URL+"/news", timeout=5).read())
-        news2 = json.loads(urllib2.urlopen(API_URL+"/news2", timeout=5).read())
-    except urllib2.HTTPError, e:
-        print "HackerNews.vim Error: %s" % str(e)
+        news1 = json.loads(urlopen(API_URL+"/news", timeout=5).read().decode('utf-8'))
+        news2 = json.loads(urlopen(API_URL+"/news2", timeout=5).read().decode('utf-8'))
+    except HTTPError:
+        print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
         return
     except:
-        print "HackerNews.vim Error: HTTP Request Timeout"
+        print("HackerNews.vim Error: HTTP Request Timeout")
         return
 
     for i, item in enumerate(news1+news2):
@@ -101,13 +117,12 @@ def link(external=False):
             browser.open("https://news.ycombinator.com/item?id="+id)
             return
         try:
-            item = json.loads(urllib2.urlopen(API_URL+"/item/"+id,
-                              timeout=5).read())
-        except urllib2.HTTPError, e:
-            print "HackerNews.vim Error: %s" % str(e)
+            item = json.loads(urlopen(API_URL+"/item/"+id, timeout=5).read().decode('utf-8'))
+        except HTTPError:
+            print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
             return
         except:
-            print "HackerNews.vim Error: HTTP Request Timeout"
+            print("HackerNews.vim Error: HTTP Request Timeout")
             return
 
         save_pos()
@@ -163,10 +178,10 @@ def link(external=False):
                 browser.open("https://news.ycombinator.com/item?id="+id)
                 return
             try:
-                item = json.loads(urllib2.urlopen(API_URL+"/item/"+id,
-                                  timeout=5).read())
+                item = json.loads(urlopen(API_URL+"/item/"+id,
+                                  timeout=5).read().decode('utf-8'))
             except:
-                print "HackerNews.vim Error: HTTP Request Timeout"
+                print("HackerNews.vim Error: HTTP Request Timeout")
                 return
             save_pos()
             del vim.current.buffer[:]
@@ -195,12 +210,12 @@ def link(external=False):
             browser.open(url)
             return
         try:
-            content = urllib2.urlopen(MARKDOWN_URL+url, timeout=5).read()
-        except urllib2.HTTPError, e:
-            print "HackerNews.vim Error: %s" % str(e)
+            content = urlopen(MARKDOWN_URL+url, timeout=5).read().decode('utf-8')
+        except HTTPError:
+            print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
             return
         except:
-            print "HackerNews.vim Error: HTTP Request Timeout"
+            print("HackerNews.vim Error: HTTP Request Timeout")
             return
         save_pos()
         del vim.current.buffer[:]
@@ -216,20 +231,20 @@ def link(external=False):
 
 def save_pos():
     marks = vim.eval("g:hackernews_marks")
-    m = vim.current.buffer[0].encode('hex')
+    m = hex(vim.current.buffer[0])
     marks[m] = list(vim.current.window.cursor)
     vim.command("let g:hackernews_marks = %s" % str(marks))
 
 
 def recall_pos():
     marks = vim.eval("g:hackernews_marks")
-    m = vim.current.buffer[0].encode('hex')
+    m = hex(vim.current.buffer[0])
     if m in marks:
         mark = marks[m]
         vim.current.window.cursor = (int(mark[0]), int(mark[1]))
 
 
-html = HTMLParser.HTMLParser()
+html = HTMLParser()
 
 
 def print_content(content):
@@ -257,7 +272,7 @@ def print_content(content):
             else:
                 s = p.find("a>", s)
 
-        contents = textwrap.wrap(re.sub(p), width=80)
+        contents = textwrap.wrap(p, width=80)
         for line in contents:
             if line.strip():
                 bwrite(line)

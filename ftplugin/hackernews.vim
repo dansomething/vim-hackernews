@@ -8,8 +8,12 @@
 "  Version: 0.1.1
 
 
-if !has('python')
-    echo "HackerNews.vim Error: Requires Vim compiled with +python"
+if has('python')
+    command! -nargs=1 Python python <args>
+elseif has('python3')
+    command! -nargs=1 Python python3 <args>
+else
+    echo "HackerNews.vim Error: Requires Vim compiled with +python or +python3"
     finish
 endif
 
@@ -19,10 +23,10 @@ endif
 
 
 " Import Python code
-execute "python import sys"
-execute "python sys.path.append(r'" . expand("<sfile>:p:h") . "')"
+execute "Python import sys"
+execute "Python sys.path.append(r'" . expand("<sfile>:p:h") . "')"
 
-python << EOF
+Python << EOF
 if 'hackernews' not in sys.modules:
     import hackernews
 else:
@@ -32,14 +36,14 @@ EOF
 
 
 " Load front page
-execute "python hackernews.main()"
+execute "Python hackernews.main()"
 
 
-noremap <buffer> o :python hackernews.link()<cr>
-noremap <buffer> O :python hackernews.link(external=True)<cr>
-noremap <buffer> gx :python hackernews.link(external=True)<cr>
-noremap <buffer> u u:python hackernews.recall_pos()<cr>
-noremap <buffer> <C-r> <C-r>:python hackernews.recall_pos()<cr>
+noremap <buffer> o :Python hackernews.link()<cr>
+noremap <buffer> O :Python hackernews.link(external=True)<cr>
+noremap <buffer> gx :Python hackernews.link(external=True)<cr>
+noremap <buffer> u u:Python hackernews.recall_pos()<cr>
+noremap <buffer> <C-r> <C-r>:Python hackernews.recall_pos()<cr>
 
 
 " Helper motion to browse front page easier
