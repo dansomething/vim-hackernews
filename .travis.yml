@@ -2,7 +2,21 @@
 
 language: vim
 
+env:
+    - PYVERSION=2
+    - PYVERSION=3
+
 before_script:
+    - if [ $PYVERSION = 3 ]; then
+        sudo apt-get install python3-dev;
+        hg clone https://code.google.com/p/vim/;
+        cd vim;
+        ./configure --enable-python3interp;
+        make;
+        sudo make install;
+        sudo cp /usr/local/bin/vim /usr/bin/vim;
+        cd -;
+      fi
     - git clone https://github.com/junegunn/vader.vim.git
 
 script: |

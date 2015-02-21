@@ -40,11 +40,11 @@ Expect (set filetype=hackernews):
                 set filetype=hackernews
 
 Do (Test HackerNews Defined):
-  "cpdd
+  "cpdddd
+  :%s/ \{2,}/ /g\<cr>
 
 Expect (edit .hackernews):
-      Name        Args Range Complete  Definition
-      HackerNews  0                    edit .hackernews
+   HackerNews 0 edit .hackernews
 
 Execute (Test HackerNews Command):
   HackerNews
