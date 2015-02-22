@@ -72,8 +72,10 @@ def main():
     bwrite("")
 
     try:
-        news1 = json.loads(urlopen(API_URL+"/news", timeout=5).read().decode('utf-8'))
-        news2 = json.loads(urlopen(API_URL+"/news2", timeout=5).read().decode('utf-8'))
+        news1 = json.loads(urlopen(API_URL+"/news", timeout=5)
+                           .read().decode('utf-8'))
+        news2 = json.loads(urlopen(API_URL+"/news2", timeout=5)
+                           .read().decode('utf-8'))
     except HTTPError:
         print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
         return
@@ -109,7 +111,7 @@ def link(external=False):
     line = vim.current.line
 
     # Search for Hacker News [item id]
-    m = re.search(r"\[([0-9]+)\]$", line)
+    m = re.search(r"\[([0-9]{3,})\]$", line)
     if m:
         id = m.group(1)
         if external:
@@ -117,7 +119,8 @@ def link(external=False):
             browser.open("https://news.ycombinator.com/item?id="+id)
             return
         try:
-            item = json.loads(urlopen(API_URL+"/item/"+id, timeout=5).read().decode('utf-8'))
+            item = json.loads(urlopen(API_URL+"/item/"+id, timeout=5)
+                              .read().decode('utf-8'))
         except HTTPError:
             print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
             return
@@ -159,10 +162,11 @@ def link(external=False):
         i -= 1
     start = i
     if b[i].find("[http") >= 0:
-        if b[i].find("]") >= 0:
-            url = b[i][b[i].find("[http")+1:b[i].find("]")]
+        if b[i].find("]", b[i].find("[http")) >= 0:
+            url = b[i][b[i].find("[http")+1:b[i].find("]", b[i].find("[http"))]
         else:
             url = b[i][b[i].find("[http")+1:]
+            i += 1
             while b[i].find("]") < 0:
                 if i != start:
                     url += b[i]
@@ -210,13 +214,15 @@ def link(external=False):
             browser.open(url)
             return
         try:
-            content = urlopen(MARKDOWN_URL+url, timeout=5).read().decode('utf-8')
+            content = urlopen(MARKDOWN_URL+url, timeout=8)
+            content = content.read().decode('utf-8')
         except HTTPError:
             print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
             return
         except:
             print("HackerNews.vim Error: HTTP Request Timeout")
             return
+        content = re.sub(r"(http\S+?)([\<\>\s\n])", "[\g<1>]\g<2>", content)
         save_pos()
         del vim.current.buffer[:]
         for i, line in enumerate(content.split('\n')):
