@@ -45,7 +45,10 @@ def bwrite(s):
         s = s.encode('utf-8', errors='replace')
 
     # Code block markers for syntax highlighting
-    if s == unichr(160).encode('utf-8') and not b[-1]:
+    cb = unichr(160)
+    if isinstance(cb, unicode):
+        cb = cb.encode('utf-8')
+    if s == cb and not b[-1]:
         b[-1] = s
         return
 
