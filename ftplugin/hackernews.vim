@@ -42,8 +42,12 @@ execute "Python hackernews.main()"
 noremap <buffer> o :Python hackernews.link()<cr>
 noremap <buffer> O :Python hackernews.link(external=True)<cr>
 noremap <buffer> gx :Python hackernews.link(external=True)<cr>
-noremap <buffer> u u:Python hackernews.recall_pos()<cr>
-noremap <buffer> <C-r> <C-r>:Python hackernews.recall_pos()<cr>
+noremap <buffer> u :Python hackernews.save_pos()<cr>
+                   \u
+                   \:Python hackernews.recall_pos()<cr>
+noremap <buffer> <C-r> :Python hackernews.save_pos()<cr>
+                       \<C-r>
+                       \:Python hackernews.recall_pos()<cr>
 
 
 " Helper motions to browse front page, comments and articles easier
