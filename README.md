@@ -17,12 +17,27 @@ Basic Usage
 -----------
 
 * Open the Hacker News front page in Vim by executing the `:HackerNews` command
-* Move between items on the front page with uppercase `J` and `K`
 * Press lowercase `o` to open links in Vim
 * Press uppercase `O` to open links in default web browser
-* Press lowercase `u` to go back (or whatever you've remapped `undo` to)
-* Press `Ctrl+r` to go forward (or whatever you're remapped `redo` to)
+* Numbered lines with story titles on the front page link to the story url
+* Comment lines on the front page link to the comments url
+* Press lowercase `u` to go back
+* Press `Ctrl+r` to go forward
 * Execute the `:bd` command to close and remove the Hacker News buffer
+
+
+Enhanced Motions
+----------------
+
+Uppercase `J` and `K` are mapped to helpful new motions based on what type of
+content is on the screen:
+
+* Move to next/prev item when viewing the front page. (If the cursor is on a
+  numbered line with story title the cursor will move to the next/prev numbered
+  line with story title. If the cursor is on a comment line it will move to the
+  next/prev comment line.)
+* Move to next/prev comment when viewing comments.
+* Move to next/prev paragraph when viewing the text version of articles.
 
 
 Installation

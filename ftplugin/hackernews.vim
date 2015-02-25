@@ -46,18 +46,32 @@ noremap <buffer> u u:Python hackernews.recall_pos()<cr>
 noremap <buffer> <C-r> <C-r>:Python hackernews.recall_pos()<cr>
 
 
-" Helper motion to browse front page easier
-function! s:NextItem(backwards)
-    if match(getline('.'), '^\s\{4}.\+ago') >= 0
-        " Move to next/previous comment line
-        let pattern = '^\s\{4}[0-9]'
-    else
-        " Move to next/previous title line
-        let pattern = '^\s*\d\+\.\s.'
-    endif
+" Helper motions to browse front page, comments and articles easier
+function! s:Move(backwards)
     let dir = a:backwards? '?' : '/'
-    execute 'silent normal! ' . dir . pattern . dir . 'e\r'
+    if match(getline(1), "┌───┐") == 0
+        " Front Page
+        if match(getline('.'), '^\s\{4}.\+ago') >= 0
+            " Move to next/previous comment line
+            let pattern = '^\s\{4}[0-9]'
+        else
+            " Move to next/previous title line
+            let pattern = '^\s*\d\+\.\s.'
+        endif
+        execute 'silent normal! ' . dir . pattern . dir . 'e\r'
+    elseif match(getline(2), '^\d\+\s.\+ago') == 0
+        " Comment Page
+        let pattern = '^\s*Comment by'
+        execute 'silent normal! ' . dir . pattern . dir . '\rzt'
+    else
+        " Article
+        if a:backwards
+            silent normal! {
+        else
+            silent normal! }
+        endif
+    endif
 endfunction
 
-noremap <buffer> J :call <SID>NextItem(0)<cr>
-noremap <buffer> K :call <SID>NextItem(1)<cr>
+noremap <buffer> J :call <SID>Move(0)<cr>
+noremap <buffer> K :call <SID>Move(1)<cr>
