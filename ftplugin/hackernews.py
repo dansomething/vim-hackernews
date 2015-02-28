@@ -133,26 +133,31 @@ def link(external=False):
 
         save_pos()
         del vim.current.buffer[:]
-        if 'domain' in item:
-            bwrite("%s (%s)" % (item['title'], item['domain']))
-        else:
-            bwrite(item['title'])
-        if item.get('comments_count', None):
-            bwrite("%d points by %s %s | %d comments"
-                   % (item['points'], item['user'], item['time_ago'],
-                      item['comments_count']))
-        else:
-            bwrite(item['time_ago'])
-        if 'url' in item:
-            if item['url'].find("item?id=") == 0:
-                item['url'] = "http://news.ycombinator.com/" + item['url']
-            bwrite("[%s]" % item['url'])
-        if 'content' in item:
+        if 'title' in item:
+            if 'domain' in item:
+                bwrite("%s (%s)" % (item['title'], item['domain']))
+            else:
+                bwrite(item['title'])
+            if item.get('comments_count', None):
+                bwrite("%d points by %s %s | %d comments"
+                       % (item['points'], item['user'], item['time_ago'],
+                          item['comments_count']))
+            else:
+                bwrite(item['time_ago'])
+            if 'url' in item:
+                if item['url'].find("item?id=") == 0:
+                    item['url'] = "http://news.ycombinator.com/" + item['url']
+                bwrite("[%s]" % item['url'])
+            if 'content' in item:
+                bwrite("")
+                print_content(item['content'])
             bwrite("")
-            print_content(item['content'])
-        bwrite("")
-        bwrite("")
-        print_comments(item['comments'])
+            bwrite("")
+        if item['type'] == "comment":
+            item['level'] = 0
+            print_comments([item,])
+        else:
+            print_comments(item['comments'])
         return
 
     # Search for [http] link
@@ -192,24 +197,29 @@ def link(external=False):
                 return
             save_pos()
             del vim.current.buffer[:]
-            if 'domain' in item:
-                bwrite("%s (%s)" % (item['title'], item['domain']))
-            else:
-                bwrite(item['title'])
-            if item.get('comments_count', None):
-                bwrite("%d points by %s %s | %d comments"
-                       % (item['points'], item['user'], item['time_ago'],
-                          item['comments_count']))
-            else:
-                bwrite(item['time_ago'])
-            if 'url' in item:
-                bwrite("[http://news.ycombinator.com/item?id=" + str(id) + "]")
-            if 'content' in item:
+            if 'title' in item:
+                if 'domain' in item:
+                    bwrite("%s (%s)" % (item['title'], item['domain']))
+                else:
+                    bwrite(item['title'])
+                if item.get('comments_count', None):
+                    bwrite("%d points by %s %s | %d comments"
+                           % (item['points'], item['user'], item['time_ago'],
+                              item['comments_count']))
+                else:
+                    bwrite(item['time_ago'])
+                if 'url' in item:
+                    bwrite("[http://news.ycombinator.com/item?id=" + str(id) + "]")
+                if 'content' in item:
+                    bwrite("")
+                    print_content(item['content'])
                 bwrite("")
-                print_content(item['content'])
-            bwrite("")
-            bwrite("")
-            print_comments(item['comments'])
+                bwrite("")
+            if item['type'] == "comment":
+                item['level'] = 0
+                print_comments([item,])
+            else:
+                print_comments(item['comments'])
             return
 
         if external:
@@ -289,9 +299,8 @@ def print_content(content):
             bwrite("")
 
 
-def print_comments(comments):
+def print_comments(comments, level=0):
     for comment in comments:
-        level = comment['level']
         bwrite("%sComment by %s %s:"
                % ("\t"*level, comment.get('user', '???'), comment['time_ago']))
         for p in comment['content'].split("<p>"):
@@ -341,4 +350,4 @@ def print_comments(comments):
             if contents and line.strip():
                 bwrite("")
         bwrite("")
-        print_comments(comment['comments'])
+        print_comments(comment['comments'], level+1)
