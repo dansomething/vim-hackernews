@@ -158,6 +158,8 @@ def link(external=False):
             print_comments([item,])
         else:
             print_comments(item['comments'])
+        # Highlight OP username in comment titles
+        vim.command("syn match Question /%s/ contained" % item['user'])
         return
 
     # Search for [http] link
@@ -220,6 +222,8 @@ def link(external=False):
                 print_comments([item,])
             else:
                 print_comments(item['comments'])
+            # Highlight OP username in comment titles
+            vim.command("syn match Question /%s/ contained" % item['user'])
             return
 
         if external:
