@@ -275,6 +275,7 @@ def print_content(content):
         if not p:
             continue
         p = html.unescape(p)
+        p = p.replace("<i>", "_").replace("</i>", "_")
 
         # Convert <a href="http://url/">Text</a> tags
         # to markdown equivalent: (Text)[http://url/]
@@ -311,6 +312,7 @@ def print_comments(comments, level=0):
             if not p:
                 continue
             p = html.unescape(p)
+            p = p.replace("<i>", "_").replace("</i>", "_")
 
             # Extract code block before textwrap to conserve whitespace
             code = None
