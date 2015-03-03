@@ -155,7 +155,7 @@ def link(external=False):
             bwrite("")
         if item['type'] == "comment":
             item['level'] = 0
-            print_comments([item,])
+            print_comments([item])
         else:
             print_comments(item['comments'])
         # Highlight OP username in comment titles
@@ -211,7 +211,7 @@ def link(external=False):
                 else:
                     bwrite(item['time_ago'])
                 if 'url' in item:
-                    bwrite("[http://news.ycombinator.com/item?id=" + str(id) + "]")
+                    bwrite("[http://news.ycombinator.com/item?id=%s]" % id)
                 if 'content' in item:
                     bwrite("")
                     print_content(item['content'])
@@ -219,7 +219,7 @@ def link(external=False):
                 bwrite("")
             if item['type'] == "comment":
                 item['level'] = 0
-                print_comments([item,])
+                print_comments([item])
             else:
                 print_comments(item['comments'])
             # Highlight OP username in comment titles
@@ -307,7 +307,8 @@ def print_content(content):
 def print_comments(comments, level=0):
     for comment in comments:
         bwrite("%sComment by %s %s:"
-               % ("\t"*level, comment.get('user', '???'), comment['time_ago']))
+               % (" "*level*4, comment.get('user', '???'),
+                  comment['time_ago']))
         for p in comment['content'].split("<p>"):
             if not p:
                 continue
