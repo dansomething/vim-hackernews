@@ -21,6 +21,7 @@ Basic Usage
 * Press uppercase `O` to open links in default web browser
 * Numbered lines with story titles on the front page link to the story url
 * Comment lines on the front page link to the comments url
+* Press uppercase `F` to fold current comment thread
 * Press lowercase `u` to go back
 * Press `Ctrl+r` to go forward
 * Execute the `:bd` command to close and remove the Hacker News buffer

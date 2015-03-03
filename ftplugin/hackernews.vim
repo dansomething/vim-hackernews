@@ -62,11 +62,15 @@ function! s:Move(backwards)
             " Move to next/previous title line
             let pattern = '^\s*\d\+\.\s.'
         endif
-        execute 'silent normal! ' . dir . pattern . dir . 'e\r'
+        execute 'silent normal! ' . dir . pattern . dir . '\r'
     elseif match(getline(2), '^\d\+\s.\+ago') == 0
         " Comment Page
         let pattern = '^\s*Comment by'
         execute 'silent normal! ' . dir . pattern . dir . '\rzt'
+        " Do not stop on folded lines
+        if foldclosed(line('.')) != -1
+            execute 'silent normal! ' . dir . pattern . dir . '\rzt'
+        endif
     else
         " Article
         if a:backwards
@@ -79,3 +83,28 @@ endfunction
 
 noremap <buffer> J :call <SID>Move(0)<cr>
 noremap <buffer> K :call <SID>Move(1)<cr>
+
+
+" Fold comment threads
+function! s:FoldComments()
+    if match(getline(2), '^\d\+\s.\+ago') != 0
+        " Do not continue if this is not a comments page
+        return
+    endif
+    set nowrapscan
+    try
+        execute 'silent normal! ' . 'jj?^\s*Comment by.*:?\rj'
+    catch
+        " Nothing to fold
+        return
+    endtry
+    let level = matchstr(getline('.'), '^\s\+')
+    try
+        execute 'silent normal! ' . 'zf/\n^\s\{0,' . len(level). '}Comment/\r'
+    catch
+        execute 'silent! normal! ' . 'zf/\n\%$/e\r'
+    endtry
+    set wrapscan
+endfunction
+
+noremap <buffer> F :call <SID>FoldComments()<cr>
