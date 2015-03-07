@@ -113,24 +113,56 @@ def main():
 def link(external=False):
     line = vim.current.line
 
+    item_id = None
+    url = None
+
     # Search for Hacker News [item id]
     m = re.search(r"\[([0-9]{3,})\]$", line)
     if m:
-        id = m.group(1)
+        item_id = m.group(1)
+
+    else:
+        # Search for [http] link
+        b = vim.current.buffer
+        i = vim.current.range.start
+        while b[i].find("[http") < 0 and i >= 0:
+            # The line we were on had no part of a link in it
+            if b[i-1].find("]") > 0 \
+                    and b[i-1].find("]") > b[i-1].find("[http"):
+                return
+            i -= 1
+        start = i
+        if b[i].find("[http") >= 0:
+            if b[i].find("]", b[i].find("[http")) >= 0:
+                a = b[i].find("[http") + 1
+                e = b[i].find("]", b[i].find("[http"))
+                url = b[i][a:e]
+            else:
+                url = b[i][b[i].find("[http")+1:]
+                i += 1
+                while b[i].find("]") < 0:
+                    if i != start:
+                        url += b[i]
+                    i += 1
+                if i != start:
+                    url += b[i][:b[i].find("]")]
+                url = url.replace(" ", "").replace("\n", "")
+
+    if url and url.find("news.ycombinator.com/item?id=") > 0:
+        item_id = url[url.find("item?id=")+8:]
+
+    if item_id:
+        print(item_id)
         if external:
             browser = webbrowser.get()
-            browser.open("https://news.ycombinator.com/item?id="+id)
+            browser.open("https://news.ycombinator.com/item?id="+item_id)
             return
         try:
-            item = json.loads(urlopen(API_URL+"/item/"+id, timeout=5)
-                              .read().decode('utf-8'))
-        except HTTPError:
-            print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
-            return
+            item = json.loads(urlopen(API_URL+"/item/"+item_id,
+                              timeout=5).read().decode('utf-8'))
         except:
             print("HackerNews.vim Error: HTTP Request Timeout")
             return
-
         save_pos()
         del vim.current.buffer[:]
         if 'title' in item:
@@ -145,9 +177,7 @@ def link(external=False):
             else:
                 bwrite(item['time_ago'])
             if 'url' in item:
-                if item['url'].find("item?id=") == 0:
-                    item['url'] = "http://news.ycombinator.com/" + item['url']
-                bwrite("[%s]" % item['url'])
+                bwrite("[http://news.ycombinator.com/item?id=%s]" % item_id)
             if 'content' in item:
                 bwrite("")
                 print_content(item['content'])
@@ -160,72 +190,8 @@ def link(external=False):
             print_comments(item['comments'])
         # Highlight OP username in comment titles
         vim.command("syn match Question /%s/ contained" % item['user'])
-        return
 
-    # Search for [http] link
-    b = vim.current.buffer
-    i = vim.current.range.start
-    while b[i].find("[http") < 0 and i >= 0:
-        # The line we were on had no part of a link in it
-        if b[i-1].find("]") > 0 and b[i-1].find("]") > b[i-1].find("[http"):
-            return
-        i -= 1
-    start = i
-    if b[i].find("[http") >= 0:
-        if b[i].find("]", b[i].find("[http")) >= 0:
-            url = b[i][b[i].find("[http")+1:b[i].find("]", b[i].find("[http"))]
-        else:
-            url = b[i][b[i].find("[http")+1:]
-            i += 1
-            while b[i].find("]") < 0:
-                if i != start:
-                    url += b[i]
-                i += 1
-            if i != start:
-                url += b[i][:b[i].find("]")]
-            url = url.replace(" ", "").replace("\n", "")
-
-        if url.find("news.ycombinator.com/item?id=") > 0:
-            id = url[url.find("item?id=")+8:]
-            if external:
-                browser = webbrowser.get()
-                browser.open("https://news.ycombinator.com/item?id="+id)
-                return
-            try:
-                item = json.loads(urlopen(API_URL+"/item/"+id,
-                                  timeout=5).read().decode('utf-8'))
-            except:
-                print("HackerNews.vim Error: HTTP Request Timeout")
-                return
-            save_pos()
-            del vim.current.buffer[:]
-            if 'title' in item:
-                if 'domain' in item:
-                    bwrite("%s (%s)" % (item['title'], item['domain']))
-                else:
-                    bwrite(item['title'])
-                if item.get('comments_count', None):
-                    bwrite("%d points by %s %s | %d comments"
-                           % (item['points'], item['user'], item['time_ago'],
-                              item['comments_count']))
-                else:
-                    bwrite(item['time_ago'])
-                if 'url' in item:
-                    bwrite("[http://news.ycombinator.com/item?id=%s]" % id)
-                if 'content' in item:
-                    bwrite("")
-                    print_content(item['content'])
-                bwrite("")
-                bwrite("")
-            if item['type'] == "comment":
-                item['level'] = 0
-                print_comments([item])
-            else:
-                print_comments(item['comments'])
-            # Highlight OP username in comment titles
-            vim.command("syn match Question /%s/ contained" % item['user'])
-            return
-
+    elif url:
         if external:
             browser = webbrowser.get()
             browser.open(url)
@@ -249,7 +215,6 @@ def link(external=False):
             line = textwrap.wrap(line, width=80)
             for j, wrap in enumerate(line):
                 bwrite(wrap)
-        return
 
 
 def save_pos():
