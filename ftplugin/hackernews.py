@@ -32,6 +32,8 @@ else:
 API_URL = "http://node-hnapi.herokuapp.com"
 MARKDOWN_URL = "http://fuckyeahmarkdown.com/go/?read=1&u="
 
+html = HTMLParser()
+
 
 def bwrite(s):
     b = vim.current.buffer
@@ -181,6 +183,15 @@ def link(external=False):
             if 'content' in item:
                 bwrite("")
                 print_content(item['content'])
+            if 'poll' in item:
+                bwrite("")
+                max_score = max((c['points'] for c in item['poll']))
+                for c in item['poll']:
+                    bwrite("%s (%d points)"
+                           % (html.unescape(c['item']), c['points']))
+                    bar = int(80.0 * c['points'] / max_score)
+                    bwrite("#"*bar)
+                    bwrite("")
             bwrite("")
             bwrite("")
         if item['type'] == "comment":
@@ -230,9 +241,6 @@ def recall_pos():
     if m in marks:
         mark = marks[m]
         vim.current.window.cursor = (int(mark[0]), int(mark[1]))
-
-
-html = HTMLParser()
 
 
 def print_content(content):
