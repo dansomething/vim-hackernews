@@ -77,10 +77,16 @@ def main():
     bwrite("")
 
     try:
-        news1 = json.loads(urlopen(API_URL+"/news", timeout=5)
-                           .read().decode('utf-8'))
-        news2 = json.loads(urlopen(API_URL+"/news2", timeout=5)
-                           .read().decode('utf-8'))
+        stories = vim.eval("g:hackernews_stories") or "news"
+        if stories == "news":
+            news1 = json.loads(urlopen(API_URL+"/news", timeout=5)
+                               .read().decode('utf-8'))
+            news2 = json.loads(urlopen(API_URL+"/news2", timeout=5)
+                               .read().decode('utf-8'))
+            items = news1 + news2
+        else:
+            items = json.loads(urlopen(API_URL+"/"+stories, timeout=5)
+                               .read().decode('utf-8'))
     except HTTPError:
         print("HackerNews.vim Error: %s" % str(sys.exc_info()[1].reason))
         return
@@ -88,7 +94,7 @@ def main():
         print("HackerNews.vim Error: HTTP Request Timeout")
         return
 
-    for i, item in enumerate(news1+news2):
+    for i, item in enumerate(items):
         if 'title' not in item:
             continue
         if 'domain' in item:
@@ -100,7 +106,7 @@ def main():
             line = "%s%d. %s [%d]"
             line %= (" " if i+1 < 10 else "", i+1, item['title'], item['id'])
             bwrite(line)
-        if item['type'] == "link":
+        if item['type'] in ("link", "ask"):
             line = "%s%d points by %s %s | %d comments [%s]"
             line %= (" "*4, item['points'], item['user'], item['time_ago'],
                      item['comments_count'], str(item['id']))
@@ -172,7 +178,7 @@ def link(external=False):
                 bwrite("%s (%s)" % (item['title'], item['domain']))
             else:
                 bwrite(item['title'])
-            if item.get('comments_count', None):
+            if item.get('comments_count', None) is not None:
                 bwrite("%d points by %s %s | %d comments"
                        % (item['points'], item['user'], item['time_ago'],
                           item['comments_count']))

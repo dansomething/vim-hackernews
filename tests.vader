@@ -44,7 +44,7 @@ Do (Test HackerNews Defined):
   :%s/ \{2,}/ /g\<cr>
 
 Expect (edit .hackernews):
-   HackerNews 0 edit .hackernews
+   HackerNews ? call HackerNews(<q-args>)
 
 Execute (Test HackerNews Command):
   HackerNews

@@ -14,4 +14,20 @@ filetype plugin on
 " Load ftplugin when opening .hackernews buffer
 au! BufRead,BufNewFile *.hackernews set filetype=hackernews
 
-command! HackerNews edit .hackernews
+function HackerNews(...)
+    if a:0 > 0
+        let available_lists = ['news', 'newest', 'ask', 'show', 'shownew',
+                              \'jobs', 'best', 'active', 'noobstories']
+        if index(available_lists, a:1) >= 0
+            let g:hackernews_stories = a:1
+        else
+            let g:hackernews_stories = 'news'
+        end
+    else
+        let g:hackernews_stories = 'news'
+    end
+    edit .hackernews
+    normal! gg
+endfunction
+
+command! -nargs=? HackerNews call HackerNews(<q-args>)
