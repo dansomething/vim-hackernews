@@ -80,7 +80,7 @@ def main():
         news2 = json.loads(urlopen(API_URL+"/news2", timeout=5)
                            .read().decode('utf-8'))
     except HTTPError:
-        print("HackerNews.vim Error: %s" % str(sys.exc_info()[1][0]))
+        print("HackerNews.vim Error: %s" % str(sys.exc_info()[1].reason))
         return
     except:
         print("HackerNews.vim Error: HTTP Request Timeout")
