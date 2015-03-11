@@ -45,8 +45,8 @@ noremap <buffer> gx :Python hackernews.link(external=True)<cr>
 noremap <buffer> u :Python hackernews.save_pos()<cr>
                    \u
                    \:Python hackernews.recall_pos()<cr>
-noremap <buffer> <C-r> :Python hackernews.save_pos()<cr>
-                       \<C-r>
+noremap <buffer> <C-R> :Python hackernews.save_pos()<cr>
+                       \<C-R>
                        \:Python hackernews.recall_pos()<cr>
 
 

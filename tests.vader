@@ -43,7 +43,7 @@ Do (Test HackerNews Defined):
   "cpdddd
   :%s/ \{2,}/ /g\<cr>
 
-Expect (edit .hackernews):
+Expect (HackerNews Defined):
    HackerNews ? call HackerNews(<q-args>)
 
 Execute (Test HackerNews Command):
@@ -56,3 +56,22 @@ Then (Test Front Page):
   AssertEqual 'Comment', SyntaxAt(5,2),  'Item number syntax'
   AssertEqual 'Comment', SyntaxAt(6,5),  'Point/user/comment line syntax'
   AssertEqual '', SyntaxAt(5,5),         'Item title syntax'
+
+Do (Test Key Mappings):
+  :HackerNews\<cr>
+  ggVGd
+  :redir @a\<cr>
+  :map o\<cr>
+  :map O\<cr>
+  :map gx\<cr>
+  :map u\<cr>
+  :map <C-R>\<cr>
+  "apdd
+
+Expect (Keys Mapped):
+     o           *@:Python hackernews.link()<CR>
+     O           *@:Python hackernews.link(external=True)<CR>
+     gx          *@:Python hackernews.link(external=True)<CR>
+  n  gx            <Plug>NetrwBrowseX
+     u           *@:Python hackernews.save_pos()<CR>u:Python hackernews.recall_pos()<CR>
+     <C-R>       *@:Python hackernews.save_pos()<CR><C-R>:Python hackernews.recall_pos()<CR>
