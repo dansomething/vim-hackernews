@@ -75,3 +75,10 @@ Expect (Keys Mapped):
   n  gx            <Plug>NetrwBrowseX
      u           *@:Python hackernews.save_pos()<CR>u:Python hackernews.recall_pos()<CR>
      <C-R>       *@:Python hackernews.save_pos()<CR><C-R>:Python hackernews.recall_pos()<CR>
+
+Do (Test opening `link` type):
+  :HackerNews\<cr>
+  cc[9015621]\<esc>o
+
+Then (Test `link` opened):
+  AssertEqual getline(1), 'Show HN: vim-hackernews (github.com)'
