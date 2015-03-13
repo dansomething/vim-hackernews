@@ -67,12 +67,12 @@ Do (Test Key Mappings):
   :map u\<cr>
   :map <C-R>\<cr>
   "apdd
+  :%s/^.*Netrw.*$\n//g\<cr>
 
 Expect (Keys Mapped):
      o           *@:Python hackernews.link()<CR>
      O           *@:Python hackernews.link(external=True)<CR>
      gx          *@:Python hackernews.link(external=True)<CR>
-  n  gx            <Plug>NetrwBrowseX
      u           *@:Python hackernews.save_pos()<CR>u:Python hackernews.recall_pos()<CR>
      <C-R>       *@:Python hackernews.save_pos()<CR><C-R>:Python hackernews.recall_pos()<CR>
 
