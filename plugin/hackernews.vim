@@ -14,7 +14,7 @@ filetype plugin on
 " Load ftplugin when opening .hackernews buffer
 au! BufRead,BufNewFile *.hackernews set filetype=hackernews
 
-function HackerNews(...)
+function! HackerNews(...)
     if a:0 > 0
         let available_lists = ['news', 'newest', 'ask', 'show', 'shownew',
                               \'jobs', 'best', 'active', 'noobstories']
