@@ -188,7 +188,7 @@ def link(external=False):
                 bwrite("[http://news.ycombinator.com/item?id=%s]" % item_id)
             if 'content' in item:
                 bwrite("")
-                print_content(item['content'])
+                print_comments([dict(content=item['content'])])
             if 'poll' in item:
                 bwrite("")
                 max_score = max((c['points'] for c in item['poll']))
@@ -249,45 +249,13 @@ def recall_pos():
         vim.current.window.cursor = (int(mark[0]), int(mark[1]))
 
 
-def print_content(content):
-    for p in content.split("<p>"):
-        if not p:
-            continue
-        p = html.unescape(p)
-        p = p.replace("<i>", "_").replace("</i>", "_")
-
-        # Convert <a href="http://url/">Text</a> tags
-        # to markdown equivalent: (Text)[http://url/]
-        s = p.find("a>")
-        while s > 0:
-            s += 2
-            section = p[:s]
-            m = re.search(r"<a.*href=[\"\']([^\"\']*)[\"\'].*>(.*)</a>",
-                          section)
-            if m:
-                # Do not bother with anchor text if it is same as href url
-                if m.group(1)[:20] == m.group(2)[:20]:
-                    p = p.replace(m.group(0), "[%s]" % m.group(1))
-                else:
-                    p = p.replace(m.group(0),
-                                  "(%s)[%s]" % (m.group(2), m.group(1)))
-                s = p.find("a>")
-            else:
-                s = p.find("a>", s)
-
-        contents = textwrap.wrap(p, width=80)
-        for line in contents:
-            if line.strip():
-                bwrite(line)
-        if contents and line.strip():
-            bwrite("")
-
-
 def print_comments(comments, level=0):
     for comment in comments:
-        bwrite("%sComment by %s %s:"
-               % (" "*level*4, comment.get('user', '???'),
-                  comment['time_ago']))
+        if 'level' in comment:
+            # This is a comment (not content) so add comment header
+            bwrite("%sComment by %s %s:"
+                   % (" "*level*4, comment.get('user', '???'),
+                      comment['time_ago']))
         for p in comment['content'].split("<p>"):
             if not p:
                 continue
@@ -336,4 +304,5 @@ def print_comments(comments, level=0):
             if contents and line.strip():
                 bwrite("")
         bwrite("")
-        print_comments(comment['comments'], level+1)
+        if 'comments' in comment:
+            print_comments(comment['comments'], level+1)
