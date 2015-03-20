@@ -253,9 +253,9 @@ def print_comments(comments, level=0):
     for comment in comments:
         if 'level' in comment:
             # This is a comment (not content) so add comment header
-            bwrite("%sComment by %s %s:"
+            bwrite("%sComment by %s %s: [%s]"
                    % (" "*level*4, comment.get('user', '???'),
-                      comment['time_ago']))
+                      comment['time_ago'], comment['id']))
         for p in comment['content'].split("<p>"):
             if not p:
                 continue
