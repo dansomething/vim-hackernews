@@ -206,6 +206,8 @@ def link(external=False):
         else:
             print_comments(item['comments'])
         # Highlight OP username in comment titles
+        if 'level' not in item:
+            vim.command("syn clear Question")
         vim.command("syn match Question /%s/ contained" % item['user'])
 
     elif url:
