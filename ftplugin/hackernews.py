@@ -178,7 +178,8 @@ def link(external=False):
                 bwrite("%s (%s)" % (item['title'], item['domain']))
             else:
                 bwrite(item['title'])
-            if item.get('comments_count', None) is not None:
+            if item.get('comments_count', None) is not None \
+                    and item['type'] != "job":
                 bwrite("%d points by %s %s | %d comments"
                        % (item['points'], item['user'], item['time_ago'],
                           item['comments_count']))
