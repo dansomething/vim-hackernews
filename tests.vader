@@ -76,9 +76,47 @@ Expect (Keys Mapped):
      u           *@:Python hackernews.save_pos()<CR>u:Python hackernews.recall_pos()<CR>
      <C-R>       *@:Python hackernews.save_pos()<CR><C-R>:Python hackernews.recall_pos()<CR>
 
-Do (Test opening `link` type):
+Do (Test opening link item w/ url):
   :HackerNews\<cr>
   cc[9015621]\<esc>o
 
-Then (Test `link` opened):
+Then (Test link w/ url opened):
   AssertEqual getline(1), 'Show HN: vim-hackernews (github.com)'
+  AssertEqual getline(3), '[http://news.ycombinator.com/item?id=9015621]'
+
+Do (Test opening link item w/ content):
+  :HackerNews\<cr>
+  cc[1474094]\<esc>o
+
+Then (Test link w/ content opened):
+  AssertEqual getline(1), 'Ask HN: What were your naivetés in your twenties?'
+  AssertEqual getline(3), '[http://news.ycombinator.com/item?id=1474094]'
+  AssertEqual getline(5), 'Oh the wise elders of Hack News,'
+
+Do (Test opening poll item):
+  :HackerNews\<cr>
+  cc[5736367]\<esc>o
+
+Then (Test poll item opened):
+  AssertEqual getline(1), 'Poll: Which is your primary text editor?'
+  AssertEqual getline(3), '[http://news.ycombinator.com/item?id=5736367]'
+  AssertEqual strpart(getline(5), 0, 2), 'Vi'
+  AssertEqual getline(6), '################################################################################'
+
+Do (Test opening comment item):
+  :HackerNews\<cr>
+  cc[9015621]\<esc>o
+  :36\<cr>o
+
+Then (Test comment item opened):
+  AssertEqual strpart(getline(1), 0, 17), 'Comment by atmosx'
+  AssertEqual strpart(getline(7), 0, 21), '    Comment by ryanss'
+
+Do (Test opening job item):
+  :HackerNews\<cr>
+  cc[9250739]\<esc>o
+
+Then (Test job item opened):
+  AssertEqual getline(1), 'Love Devops? Aptible Is Hiring Senior Platform Engineers'
+  AssertEqual getline(3), '[http://news.ycombinator.com/item?id=9250739]'
+  AssertEqual getline(5), '_Brooklyn/Remote_'
