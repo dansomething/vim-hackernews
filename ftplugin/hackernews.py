@@ -132,28 +132,31 @@ def link(external=False):
     else:
         # Search for [http] link
         b = vim.current.buffer
-        i = vim.current.range.start
-        while b[i].find("[http") < 0 and i >= 0:
+        y, x = vim.current.window.cursor
+        y -= 1
+        while b[y].find("[http") < 0 and y >= 0:
             # The line we were on had no part of a link in it
-            if b[i-1].find("]") > 0 \
-                    and b[i-1].find("]") > b[i-1].find("[http"):
+            if b[y-1].find("]") > 0 \
+                    and b[y-1].find("]") > b[y-1].find("[http"):
                 return
-            i -= 1
-        start = i
-        if b[i].find("[http") >= 0:
-            if b[i].find("]", b[i].find("[http")) >= 0:
-                a = b[i].find("[http") + 1
-                e = b[i].find("]", b[i].find("[http"))
-                url = b[i][a:e]
+            y -= 1
+        start = y
+        loc = max(b[y].find("[http", x, b[y].find("]", x)),
+                  b[y].rfind("[http", 0, x))
+        if loc >= 0:
+            if b[y].find("]", loc) >= 0:
+                a = loc + 1
+                e = b[y].find("]", loc)
+                url = b[y][a:e]
             else:
-                url = b[i][b[i].find("[http")+1:]
-                i += 1
-                while b[i].find("]") < 0:
-                    if i != start:
-                        url += b[i]
-                    i += 1
-                if i != start:
-                    url += b[i][:b[i].find("]")]
+                url = b[y][loc:]
+                y += 1
+                while b[y].find("]") < 0:
+                    if y != start:
+                        url += b[y]
+                    y += 1
+                if y != start:
+                    url += b[y][:b[y].find("]")]
                 url = url.replace(" ", "").replace("\n", "")
 
     if url and url.find("news.ycombinator.com/item?id=") > 0:
