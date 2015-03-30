@@ -163,7 +163,6 @@ def link(external=False):
         item_id = url[url.find("item?id=")+8:]
 
     if item_id:
-        print(item_id)
         if external:
             browser = webbrowser.get()
             browser.open("https://news.ycombinator.com/item?id="+item_id)

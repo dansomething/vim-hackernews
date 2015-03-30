@@ -14,6 +14,9 @@ filetype plugin on
 " Load ftplugin when opening .hackernews buffer
 au! BufRead,BufNewFile *.hackernews set filetype=hackernews
 
+" Prevent syntax highlighting issues in long comment threads with code blocks
+au! BufEnter *.hackernews syntax sync fromstart
+
 function! HackerNews(...)
     if a:0 > 0
         let available_lists = ['news', 'newest', 'ask', 'show', 'shownew',
