@@ -187,7 +187,9 @@ def link(external=False):
                           item['comments_count']))
             else:
                 bwrite(item['time_ago'])
-            if 'url' in item:
+            if 'url' in item and item['url'].find(item_id) < 0:
+                bwrite("[%s]" % item['url'])
+            else:
                 bwrite("[http://news.ycombinator.com/item?id=%s]" % item_id)
             if 'content' in item:
                 bwrite("")

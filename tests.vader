@@ -82,7 +82,7 @@ Do (Test opening link item w/ url):
 
 Then (Test link w/ url opened):
   AssertEqual getline(1), 'Show HN: vim-hackernews (github.com)'
-  AssertEqual getline(3), '[http://news.ycombinator.com/item?id=9015621]'
+  AssertEqual getline(3), '[https://github.com/ryanss/vim-hackernews]'
 
 Do (Test opening link item w/ content):
   :HackerNews\<cr>
