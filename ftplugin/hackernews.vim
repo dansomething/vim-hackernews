@@ -17,6 +17,11 @@ else
     finish
 endif
 
+
+if !exists("g:hackernews_marks")
+    let g:hackernews_stories = 'news'
+endif
+
 if !exists("g:hackernews_marks")
     let g:hackernews_marks = {}
 endif
