@@ -18,15 +18,6 @@ else
 endif
 
 
-if !exists("g:hackernews_marks")
-    let g:hackernews_stories = 'news'
-endif
-
-if !exists("g:hackernews_marks")
-    let g:hackernews_marks = {}
-endif
-
-
 " Import Python code
 execute "Python import sys"
 execute "Python sys.path.append(r'" . expand("<sfile>:p:h") . "')"
