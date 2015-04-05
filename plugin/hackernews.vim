@@ -34,13 +34,16 @@ function! HackerNews(...)
                               \'jobs', 'best', 'active', 'noobstories']
         if index(available_lists, a:1) >= 0
             let g:hackernews_stories = a:1
+            let stories = a:1
         else
             let g:hackernews_stories = 'news'
+            let stories = ''
         end
     else
         let g:hackernews_stories = 'news'
+        let stories = ''
     end
-    edit .hackernews
+    execute "edit " . stories . ".hackernews"
     normal! gg
 endfunction
 

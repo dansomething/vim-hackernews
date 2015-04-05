@@ -67,7 +67,8 @@ def hex(s):
 
 
 def main():
-    vim.command("edit .hackernews")
+    stories = vim.eval("g:hackernews_stories") or "news"
+    vim.command("edit %s.hackernews" % (stories if stories != "news" else ""))
     vim.command("setlocal noswapfile")
     vim.command("setlocal buftype=nofile")
 
@@ -77,7 +78,6 @@ def main():
     bwrite("")
 
     try:
-        stories = vim.eval("g:hackernews_stories") or "news"
         if stories == "news":
             news1 = json.loads(urlopen(API_URL+"/news", timeout=5)
                                .read().decode('utf-8'))
