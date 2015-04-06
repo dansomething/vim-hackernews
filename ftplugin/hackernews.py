@@ -72,6 +72,9 @@ def main():
     vim.command("setlocal noswapfile")
     vim.command("setlocal buftype=nofile")
 
+    if vim.eval("changenr()") == "1":
+        vim.command("setlocal undolevels=-1")
+
     bwrite("┌───┐")
     bwrite("│ Y │ Hacker News (news.ycombinator.com)")
     bwrite("└───┘")
@@ -116,6 +119,7 @@ def main():
             line %= (" "*4, item['time_ago'], item['id'])
             bwrite(line)
         bwrite("")
+    vim.command("setlocal undolevels=100")
 
 
 def link(external=False):
