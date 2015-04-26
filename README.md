@@ -1,4 +1,4 @@
-vim-hackernews [![Build Status](https://travis-ci.org/ryanss/vim-hackernews.svg)](https://travis-ci.org/ryanss/vim-hackernews)
+vim-hackernews [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ryanss/vim-hackernews/raw/master/LICENSE) [![Version](https://img.shields.io/badge/version-0.2-orange.svg)](https://github.com/ryanss/vim-hackernews/releases/tag/v0.2) [![Build Status](https://img.shields.io/travis/ryanss/vim-hackernews.svg)](https://travis-ci.org/ryanss/vim-hackernews)
 ==============
 
 Browse [Hacker News](https://news.ycombinator.com) inside Vim.

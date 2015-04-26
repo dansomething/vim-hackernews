@@ -1,0 +1,39 @@
+Vim-HackerNews Changelog
+========================
+
+
+Version 0.2
+-----------
+
+Released April 26, 2015
+
+- Add Python 3 support
+- Add additional motions to improve browsing of story lists, comments, articles
+- Add comment thread folding
+- Add ability to display specific HackerNews lists (top, ask, show, etc)
+- Handle all HackerNews item types properly (poll, job, etc)
+- Save cursor position when moving back/forward
+- Add highlighting of OP username in comment titles
+- Do not load python code until first :HackerNews command
+- Timeout HTTP requests after 5 seconds instead of hanging Vim
+- Improve HTTP error information
+- Add units tests with Vader.vim
+- Add Travis CI integration
+- Lots of syntax fixes and improvements
+- Dozens of other bug fixes and improvements
+
+
+Version 0.1.1
+-------------
+
+Released February 7, 2015
+
+- Fix "job" type items without a `domain` key in API
+
+
+Version 0.1
+-----------
+
+Released February 7, 2015
+
+- Initial release
