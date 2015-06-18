@@ -5,7 +5,7 @@
 "  Author:  ryanss <ryanssdev@icloud.com>
 "  Website: https://github.com/ryanss/vim-hackernews
 "  License: MIT (see LICENSE file)
-"  Version: 0.2 (April 26, 2015)
+"  Version: 0.3-dev
 
 
 if exists("b:current_syntax")
@@ -45,8 +45,8 @@ syn match Comment /^\s*Comment\sby.\+ago:/ contains=Question
 syn region Constant start="\[http" end="\]"
 
 " Italics <i> tags
-syn match Italics /\v<_\_.{-}_>/
-highlight Italics gui=italic
+syn match Italic /\v<_\_.{-}(_>|^$)/
+highlight Italic gui=italic
 
 " Highlight code blocks
 syn region Statement start="^ " end="^ "
