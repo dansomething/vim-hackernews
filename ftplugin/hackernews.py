@@ -267,6 +267,10 @@ def print_comments(comments, level=0):
             bwrite("%sComment by %s %s: [%s]"
                    % (" "*level*4, comment.get('user', '???'),
                       comment['time_ago'], comment['id']))
+        if not comment.get('content', False):
+            bwrite("")
+            bwrite("")
+            continue
         for p in comment['content'].split("<p>"):
             if not p:
                 continue
