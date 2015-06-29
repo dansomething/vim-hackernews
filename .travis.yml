@@ -12,6 +12,7 @@ install:
 before_script:
     - flake8 ftplugin/hackernews.py
     - if [ $PYVERSION = 3 ]; then
+        sudo apt-get update;
         sudo apt-get install python3-dev;
         hg clone https://code.google.com/p/vim/;
         cd vim;
