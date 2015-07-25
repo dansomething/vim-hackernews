@@ -178,6 +178,7 @@ def link(external=False):
             print("HackerNews.vim Error: HTTP Request Timeout")
             return
         save_pos()
+        vim.command("set syntax=hackernews")
         del vim.current.buffer[:]
         if 'title' in item:
             if 'domain' in item:
@@ -235,6 +236,7 @@ def link(external=False):
             return
         content = re.sub(r"(http\S+?)([\<\>\s\n])", "[\g<1>]\g<2>", content)
         save_pos()
+        vim.command("set syntax=markdown")
         del vim.current.buffer[:]
         for i, line in enumerate(content.split('\n')):
             if not line:
@@ -249,6 +251,7 @@ def save_pos():
     marks = vim.eval("g:hackernews_marks")
     m = hex(vim.current.buffer[0])
     marks[m] = list(vim.current.window.cursor)
+    marks[m].append(vim.eval("&syntax"))
     vim.command("let g:hackernews_marks = %s" % str(marks))
 
 
@@ -258,6 +261,7 @@ def recall_pos():
     if m in marks:
         mark = marks[m]
         vim.current.window.cursor = (int(mark[0]), int(mark[1]))
+        vim.command("set syntax=%s" % mark[2])
 
 
 def print_comments(comments, level=0):
