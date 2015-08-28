@@ -215,10 +215,12 @@ def link(external=False):
             print_comments([item])
         else:
             print_comments(item['comments'])
+        # Prevent syntax issues in long comment threads with code blocks
+        vim.command("syntax sync fromstart")
         # Highlight OP username in comment titles
         if 'level' not in item:
-            vim.command("syn clear Question")
-        vim.command("syn match Question /%s/ contained" % item['user'])
+            vim.command("syntax clear Question")
+        vim.command("syntax match Question /%s/ contained" % item['user'])
 
     elif url:
         if external:

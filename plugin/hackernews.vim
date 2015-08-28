@@ -14,9 +14,6 @@ filetype plugin on
 " Load ftplugin when opening .hackernews buffer
 au! BufRead,BufNewFile *.hackernews set filetype=hackernews
 
-" Prevent syntax highlighting issues in long comment threads with code blocks
-au! BufEnter *.hackernews syntax sync fromstart
-
 
 " Set required defaults
 if !exists("g:hackernews_stories")
