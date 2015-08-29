@@ -35,7 +35,7 @@ syn match Comment /^\s*[0-9]\{1,2}\.\s/
 syn match Comment /\s([^\[]\S\+\.\S\+)/
 syn match Comment /^\s\{4}[0-9an]\+\s.\+\sago/
 syn match Comment /^\s\{4}[0-9an]\+\spoints.\+\s\s|.*comments/
-syn match Comment /^.*ago\s|.*comments/
+syn match Comment /^.*ago\s|.*comments/ contains=Question
 syn match Comment /^[0-9an]\+\s.\+\sago$/
 
 " Comment titles
