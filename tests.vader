@@ -73,8 +73,8 @@ Expect (Keys Mapped):
      o           *@:Python hackernews.link()<CR>
      O           *@:Python hackernews.link(external=True)<CR>
      gx          *@:Python hackernews.link(external=True)<CR>
-     u           *@:Python hackernews.save_pos()<CR>u:Python hackernews.recall_pos()<CR>
-     <C-R>       *@:Python hackernews.save_pos()<CR><C-R>:Python hackernews.recall_pos()<CR>
+     u           *@:Python hackernews.save_pos()<CR>u:Python hackernews.recall_pos("undo")<CR>
+     <C-R>       *@:Python hackernews.save_pos()<CR><C-R>:Python hackernews.recall_pos("redo")<CR>
 
 Do (Test opening link item w/ url):
   :HackerNews\<cr>

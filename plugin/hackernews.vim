@@ -16,8 +16,8 @@ au! BufRead,BufNewFile *.hackernews set filetype=hackernews
 
 
 " Set required defaults
-if !exists("g:hackernews_stories")
-    let g:hackernews_stories = 'news'
+if !exists("g:hackernews_arg")
+    let g:hackernews_arg = 'news'
 endif
 
 if !exists("g:hackernews_marks")
@@ -27,20 +27,9 @@ endif
 
 function! HackerNews(...)
     if a:0 > 0
-        let available_lists = ['news', 'newest', 'ask', 'show', 'shownew',
-                              \'jobs', 'best', 'active', 'noobstories']
-        if index(available_lists, a:1) >= 0
-            let g:hackernews_stories = a:1
-            let stories = a:1
-        else
-            let g:hackernews_stories = 'news'
-            let stories = ''
-        end
-    else
-        let g:hackernews_stories = 'news'
-        let stories = ''
-    end
-    execute "edit " . stories . ".hackernews"
+        let g:hackernews_arg = a:1
+    endif
+    execute "edit .hackernews"
     normal! gg
 endfunction
 

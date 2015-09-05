@@ -41,10 +41,10 @@ noremap <buffer> O :Python hackernews.link(external=True)<cr>
 noremap <buffer> gx :Python hackernews.link(external=True)<cr>
 noremap <buffer> u :Python hackernews.save_pos()<cr>
                    \u
-                   \:Python hackernews.recall_pos()<cr>
+                   \:Python hackernews.recall_pos("undo")<cr>
 noremap <buffer> <C-R> :Python hackernews.save_pos()<cr>
                        \<C-R>
-                       \:Python hackernews.recall_pos()<cr>
+                       \:Python hackernews.recall_pos("redo")<cr>
 
 
 " Helper motions to browse front page, comments and articles easier

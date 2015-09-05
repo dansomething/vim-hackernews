@@ -67,8 +67,7 @@ def hex(s):
 
 
 def main():
-    stories = vim.eval("g:hackernews_stories") or "news"
-    vim.command("edit %s.hackernews" % (stories if stories != "news" else ""))
+    vim.command("edit .hackernews")
     vim.command("setlocal noswapfile")
     vim.command("setlocal buftype=nofile")
 
@@ -81,15 +80,23 @@ def main():
     bwrite("")
 
     try:
-        if stories == "news":
+        arg = vim.eval("g:hackernews_arg")
+        if arg in ['newest', 'ask', 'show', 'shownew', 'jobs',
+                   'best', 'active', 'noobstories']:
+            items = json.loads(urlopen(API_URL+"/"+arg, timeout=5)
+                               .read().decode('utf-8'))
+        elif arg.isdigit():
+            link(item_id=arg)
+            return
+        elif arg[:4] == 'http':
+            link(url=arg)
+            return
+        else:
             news1 = json.loads(urlopen(API_URL+"/news", timeout=5)
                                .read().decode('utf-8'))
             news2 = json.loads(urlopen(API_URL+"/news2", timeout=5)
                                .read().decode('utf-8'))
             items = news1 + news2
-        else:
-            items = json.loads(urlopen(API_URL+"/"+stories, timeout=5)
-                               .read().decode('utf-8'))
     except HTTPError:
         print("HackerNews.vim Error: %s" % str(sys.exc_info()[1].reason))
         return
@@ -122,46 +129,44 @@ def main():
     vim.command("setlocal undolevels=100")
 
 
-def link(external=False):
+def link(item_id=None, url=None, external=False):
     line = vim.current.line
 
-    item_id = None
-    url = None
+    if not (item_id or url):
+        # Search for Hacker News [item id]
+        m = re.search(r"\[([0-9]{3,})\]$", line)
+        if m:
+            item_id = m.group(1)
 
-    # Search for Hacker News [item id]
-    m = re.search(r"\[([0-9]{3,})\]$", line)
-    if m:
-        item_id = m.group(1)
-
-    else:
-        # Search for [http] link
-        b = vim.current.buffer
-        y, x = vim.current.window.cursor
-        y -= 1
-        while b[y].find("[http") < 0 and y >= 0:
-            # The line we were on had no part of a link in it
-            if b[y-1].find("]") > 0 \
-                    and b[y-1].find("]") > b[y-1].find("[http"):
-                return
+        else:
+            # Search for [http] link
+            b = vim.current.buffer
+            y, x = vim.current.window.cursor
             y -= 1
-        start = y
-        loc = max(b[y].find("[http", x, b[y].find("]", x)),
-                  b[y].rfind("[http", 0, x))
-        if loc >= 0:
-            if b[y].find("]", loc) >= 0:
-                a = loc + 1
-                e = b[y].find("]", loc)
-                url = b[y][a:e]
-            else:
-                url = b[y][loc:]
-                y += 1
-                while b[y].find("]") < 0:
-                    if y != start:
-                        url += b[y]
+            while b[y].find("[http") < 0 and y >= 0:
+                # The line we were on had no part of a link in it
+                if b[y-1].find("]") > 0 \
+                        and b[y-1].find("]") > b[y-1].find("[http"):
+                    return
+                y -= 1
+            start = y
+            loc = max(b[y].find("[http", x, b[y].find("]", x)),
+                      b[y].rfind("[http", 0, x))
+            if loc >= 0:
+                if b[y].find("]", loc) >= 0:
+                    a = loc + 1
+                    e = b[y].find("]", loc)
+                    url = b[y][a:e]
+                else:
+                    url = b[y][loc:]
                     y += 1
-                if y != start:
-                    url += b[y][:b[y].find("]")]
-                url = url.replace(" ", "").replace("\n", "")
+                    while b[y].find("]") < 0:
+                        if y != start:
+                            url += b[y]
+                        y += 1
+                    if y != start:
+                        url += b[y][:b[y].find("]")]
+                    url = url.replace(" ", "").replace("\n", "")
 
     if url and url.find("news.ycombinator.com/item?id=") > 0:
         item_id = url[url.find("item?id=")+8:]
@@ -252,14 +257,18 @@ def link(external=False):
 def save_pos():
     marks = vim.eval("g:hackernews_marks")
     m = hex(vim.current.buffer[0])
+    if not m:
+        return
     marks[m] = list(vim.current.window.cursor)
     marks[m].append(vim.eval("&syntax"))
     vim.command("let g:hackernews_marks = %s" % str(marks))
 
 
-def recall_pos():
+def recall_pos(cmd):
     marks = vim.eval("g:hackernews_marks")
     m = hex(vim.current.buffer[0])
+    if not m:
+        vim.command(cmd)
     if m in marks:
         mark = marks[m]
         vim.current.window.cursor = (int(mark[0]), int(mark[1]))
