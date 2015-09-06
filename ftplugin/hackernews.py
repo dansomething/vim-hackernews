@@ -10,27 +10,33 @@
 #  Version: 0.3-dev
 
 
-from __future__ import print_function
+from __future__ import print_function, division
 import binascii
 import json
 import re
+import sys
 import textwrap
 import vim
 import webbrowser
-import sys
+from datetime import datetime
 if sys.version_info >= (3, 0):
     from html.parser import HTMLParser
+    from urllib.parse import quote_plus, urlparse
     from urllib.request import urlopen
     from urllib.error import HTTPError
     unicode = bytes
     unichr = chr
 else:
     from HTMLParser import HTMLParser
+    from urllib import quote_plus
     from urllib2 import urlopen, HTTPError
+    from urlparse import urlparse
 
 
 API_URL = "http://node-hnapi.herokuapp.com"
 MARKDOWN_URL = "http://fuckyeahmarkdown.com/go/?read=1&u="
+SEARCH = ("https://hn.algolia.com/api/v1/search" +
+          "?tags=story&hitsPerPage=60&query=")
 
 html = HTMLParser()
 
@@ -66,6 +72,35 @@ def hex(s):
     return binascii.hexlify(s)
 
 
+def time_ago(timestamp):
+    d = datetime.now() - datetime.fromtimestamp(timestamp)
+    years = d.days // 365
+    if years > 1:
+        return "%d years ago" % (years)
+    elif years == 1:
+        return "%d year ago" % (years)
+    months = d.days // 30
+    if months > 1:
+        return "%d months ago" % (months)
+    elif months == 1:
+        return "%d month ago" % (months)
+    if d.days > 1:
+        return "%d days ago" % (d.days)
+    elif d.days == 1:
+        return "%d day ago" % (d.days)
+    hours = d.seconds // 60 // 60
+    if hours > 1:
+        return "%d hours ago" % (hours)
+    elif hours == 1:
+        return "%d hour ago" % (hours)
+    minutes = d.seconds // 60
+    if minutes > 1:
+        return "%d minutes ago" % (minutes)
+    elif minutes == 1:
+        return "%d minute ago" % (minutes)
+    return "%d seconds ago" % (d.seconds)
+
+
 def main():
     vim.command("edit .hackernews")
     vim.command("setlocal noswapfile")
@@ -91,12 +126,15 @@ def main():
         elif arg[:4] == 'http':
             link(url=arg)
             return
-        else:
+        elif not arg:
             news1 = json.loads(urlopen(API_URL+"/news", timeout=5)
                                .read().decode('utf-8'))
             news2 = json.loads(urlopen(API_URL+"/news2", timeout=5)
                                .read().decode('utf-8'))
             items = news1 + news2
+        else:
+            items = json.loads(urlopen(SEARCH+quote_plus(arg), timeout=5)
+                               .read().decode('utf-8'))['hits']
     except HTTPError:
         print("HackerNews.vim Error: %s" % str(sys.exc_info()[1].reason))
         return
@@ -105,6 +143,18 @@ def main():
         return
 
     for i, item in enumerate(items):
+        # Test if item is a result from search API
+        if 'objectID' in item:
+            # Convert search API results into dict similar to regular API
+            # results so we can use same code to output results
+            item['id'] = int(item['objectID'])
+            item['user'] = item['author']
+            item['type'] = "link"
+            item['time_ago'] = time_ago(item['created_at_i'])
+            item['comments_count'] = int(item['num_comments'])
+            if item.get('url', False):
+                item['domain'] = urlparse(item['url']).netloc
+
         if 'title' not in item:
             continue
         if 'domain' in item:

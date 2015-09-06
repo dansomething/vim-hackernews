@@ -28,6 +28,8 @@ endif
 function! HackerNews(...)
     if a:0 > 0
         let g:hackernews_arg = a:1
+    else
+        let g:hackernews_arg = ""
     endif
     execute "edit .hackernews"
     normal! gg

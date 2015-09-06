@@ -19,7 +19,7 @@ Basic Usage
 * Open the Hacker News front page in Vim by executing the `:HackerNews` command
 * The HackerNews command takes an optional parameter to view items other
   than the top stories on the front page: `ask`, `show`, `shownew`, `jobs`,
-  `best`, `active`, `newest`, `noobstories`, or `item id`
+  `best`, `active`, `newest`, `noobstories`, `<item id>`, or `<search query>`
 * Press lowercase `o` to open links in Vim
 * Press uppercase `O` to open links in default web browser
 * Numbered lines with story titles on the front page link to the story url
