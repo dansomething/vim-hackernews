@@ -208,7 +208,7 @@ def link(item_id=None, url=None, external=False):
                     e = b[y].find("]", loc)
                     url = b[y][a:e]
                 else:
-                    url = b[y][loc:]
+                    url = b[y][loc+1:]
                     y += 1
                     while b[y].find("]") < 0:
                         if y != start:
