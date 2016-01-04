@@ -45,7 +45,7 @@ syn match Comment /^\s*Comment\sby.\+ago:/ contains=Question
 syn region Constant start="\[http" end="\]"
 
 " Italics <i> tags
-syn match Italic /\v<_\_.{-}(_>|^$)/
+syn match Italic /\v<_\_.{-}(_>|^$)/ contains=Statement
 highlight Italic gui=italic
 
 " Highlight code blocks
