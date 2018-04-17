@@ -1,4 +1,4 @@
-vim-hackernews [![Build Status](https://img.shields.io/travis/dansomething/vim-hackernews.svg)](https://travis-ci.org/dansomething/vim-hackernews) [![Version](https://img.shields.io/badge/version-0.2-orange.svg)](https://github.com/dansomething/vim-hackernews/releases/tag/v0.2) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dansomething/vim-hackernews/raw/master/LICENSE)
+vim-hackernews [![Version](https://img.shields.io/badge/version-0.2-orange.svg)](https://github.com/dansomething/vim-hackernews/releases/tag/v0.2) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dansomething/vim-hackernews/raw/master/LICENSE)
 ==============
 
 Browse [Hacker News](https://news.ycombinator.com) inside Vim. Fork of [vim-hackernews](https://vim.sourceforge.io/scripts/script.php?script_id=5108) which is no longer maintained.
