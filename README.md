@@ -57,6 +57,11 @@ git clone https://github.com/dansomething/vim-hackernews ~/.vim/bundle/vim-hacke
 Plugin 'dansomething/vim-hackernews'
 ```
 
+##### vim-plug (https://github.com/junegunn/vim-plug)
+```
+Plug 'dansomething/vim-hackernews'
+```
+
 ##### NeoBundle (https://github.com/Shougo/neobundle.vim)
 ```
 NeoBundle 'dansomething/vim-hackernews'
