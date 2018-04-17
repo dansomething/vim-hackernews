@@ -1,11 +1,11 @@
-vim-hackernews [![Build Status](https://img.shields.io/travis/ryanss/vim-hackernews.svg)](https://travis-ci.org/ryanss/vim-hackernews) [![Version](https://img.shields.io/badge/version-0.2-orange.svg)](https://github.com/ryanss/vim-hackernews/releases/tag/v0.2) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ryanss/vim-hackernews/raw/master/LICENSE)
+vim-hackernews [![Build Status](https://img.shields.io/travis/dansomething/vim-hackernews.svg)](https://travis-ci.org/dansomething/vim-hackernews) [![Version](https://img.shields.io/badge/version-0.2-orange.svg)](https://github.com/dansomething/vim-hackernews/releases/tag/v0.2) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/dansomething/vim-hackernews/raw/master/LICENSE)
 ==============
 
-Browse [Hacker News](https://news.ycombinator.com) inside Vim.
+Browse [Hacker News](https://news.ycombinator.com) inside Vim. Fork of [vim-hackernews](https://vim.sourceforge.io/scripts/script.php?script_id=5108) which is no longer maintained.
 
-![Hacker News Front Page in Vim](https://github.com/ryanss/vim-hackernews/raw/master/screenshots/vim-hackernews-home.png)
+![Hacker News Front Page in Vim](https://github.com/dansomething/vim-hackernews/raw/master/screenshots/vim-hackernews-home.png)
 
-![Hacker News Comments in Vim](https://github.com/ryanss/vim-hackernews/raw/master/screenshots/vim-hackernews-item.png)
+![Hacker News Comments in Vim](https://github.com/dansomething/vim-hackernews/raw/master/screenshots/vim-hackernews-item.png)
 
 Uses [cheeaun's Unofficial Hacker News API](https://github.com/cheeaun/node-hnapi)
 to retrieve home page stories and comments and
@@ -49,17 +49,17 @@ Installation
 
 ##### Pathogen (https://github.com/tpope/vim-pathogen)
 ```bash
-git clone https://github.com/ryanss/vim-hackernews ~/.vim/bundle/vim-hackernews
+git clone https://github.com/dansomething/vim-hackernews ~/.vim/bundle/vim-hackernews
 ```
 
 ##### Vundle (https://github.com/gmarik/vundle)
 ```
-Plugin 'ryanss/vim-hackernews'
+Plugin 'dansomething/vim-hackernews'
 ```
 
 ##### NeoBundle (https://github.com/Shougo/neobundle.vim)
 ```
-NeoBundle 'ryanss/vim-hackernews'
+NeoBundle 'dansomething/vim-hackernews'
 ```
 
 
@@ -74,8 +74,8 @@ $ vim -c Vader! tests.vader
 Contributions
 -------------
 
-[Issues](https://github.com/ryanss/vim-hackernews/issues) and
-[Pull Requests](https://github.com/ryanss/vim-hackernews/pulls) are always
+[Issues](https://github.com/dansomething/vim-hackernews/issues) and
+[Pull Requests](https://github.com/dansomething/vim-hackernews/pulls) are always
 welcome!
 
 
@@ -83,4 +83,4 @@ License
 -------
 
 Code is available according to the MIT License
-(see [LICENSE](https://github.com/ryanss/vim-hackernews/raw/master/LICENSE)).
+(see [LICENSE](https://github.com/dansomething/vim-hackernews/raw/master/LICENSE)).
